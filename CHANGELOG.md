@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+##
+
+-   Fix [#280](https://github.com/mmomtchev/rlayers/issues/280), `<RContol.RCustom>` cannot be used as anchor for inserting new elements
+
+## [3.2.0] 2024-09-24
+
+-   Fixed `package-lock.json`
+-   OpenLayers 10.2.0 support
+-   Fix [#276](https://github.com/mmomtchev/rlayers/issues/276), extending `rlayers` example needs `ol-mapbox-style`
+
 ## [3.1.0] 2024-07-27
 
 -   OpenLayers 10 support
