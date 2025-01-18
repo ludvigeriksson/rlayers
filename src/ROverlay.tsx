@@ -1,9 +1,10 @@
 import React, {MouseEvent, PropsWithChildren} from 'react';
 import {Overlay} from 'ol';
-
-import {RContextType} from './context';
-import {RlayersBase} from './REvent';
 import {type Coordinate} from 'ol/coordinate';
+import {type PanIntoViewOptions} from 'ol/Overlay';
+
+import {RlayersBase} from './REvent';
+import {type RContextType} from './context';
 
 // TODO: Use the OpenLayers 7 type after OpenLayers 6 support
 // is dropped
@@ -28,7 +29,7 @@ export interface ROverlayProps extends PropsWithChildren<unknown> {
     className?: string;
     /** Automatically pan the map when the element is rendered
      * @default false */
-    autoPan?: boolean;
+    autoPan?: boolean | PanIntoViewOptions;
     /** Offset the overlay on the x and y axes relative to the containing feature
      * @default [0,0] */
     offset?: number[];
@@ -37,9 +38,6 @@ export interface ROverlayProps extends PropsWithChildren<unknown> {
     /** Anchor point
      * @default 'top-left' */
     positioning?: Positioning;
-    /** Automatically position the overlay so that it fits in the viewport
-     * @default false */
-    autoPosition?: boolean;
     /** Called immediately on click */
     onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
@@ -78,25 +76,6 @@ export class ROverlayBase<P extends ROverlayProps> extends RlayersBase<P, Record
 
     protected setPosition(): void {
         this.ol.setPosition(this.props.position ?? this.context.location);
-        // if (this.props.autoPosition && this.containerRef?.current) {
-        //     this.containerRef.current.style.position = 'absolute';
-        //     const pixel = this.context.map.getPixelFromCoordinate(this.context.location);
-        //     const size = this.context.map.getSize();
-        //     if (pixel[0] > size[0] / 2) {
-        //         this.containerRef.current.style.left = null;
-        //         this.containerRef.current.style.right = '0px';
-        //     } else {
-        //         this.containerRef.current.style.left = '0px';
-        //         this.containerRef.current.style.right = null;
-        //     }
-        //     if (pixel[1] > size[1] / 2) {
-        //         this.containerRef.current.style.top = null;
-        //         this.containerRef.current.style.bottom = '0px';
-        //     } else {
-        //         this.containerRef.current.style.top = '0px';
-        //         this.containerRef.current.style.bottom = null;
-        //     }
-        // }
     }
 
     protected refresh(prevProps?: P): void {
