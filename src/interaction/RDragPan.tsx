@@ -1,10 +1,9 @@
 import React from 'react';
-import {MapBrowserEvent} from 'ol';
+import {type Kinetic, MapBrowserEvent} from 'ol';
 import {ObjectEvent} from 'ol/Object';
 import {default as DragPan} from 'ol/interaction/DragPan';
 
 import {default as RBaseInteraction} from './RBaseInteraction';
-import debug from '../debug';
 
 /**
  * @propsfor RDragPan
@@ -13,11 +12,7 @@ export interface RDragPanProps {
     /** An optional OpenLayers condition */
     condition?: (e: MapBrowserEvent<UIEvent>) => boolean;
     /** Kinetic parameters */
-    kinetic?: {
-        decay: number;
-        minVelocity: number;
-        delay: number;
-    };
+    kinetic?: Kinetic;
     /** Called on every change */
     onChange?: (this: RDragPan, e: ObjectEvent) => void;
 }
