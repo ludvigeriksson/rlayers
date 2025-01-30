@@ -50,7 +50,7 @@ export interface RSelectProps {
      * Once the interaction is finished, the resulting feature will adopt
      * the style of its layer.
      */
-    style?: StyleLike;
+    style?: StyleLike | null;
 
     /**
      * An optional OpenLayers condition to allow deselection of the feature.
