@@ -15,7 +15,7 @@ export interface RDblClickDragZoomProps {
      * @default 1 */
     delta?: number;
     /** Should the down event be propagated to other interactions, or should be stopped? */
-    stopDown?: boolean;
+    stopDown?: (handled: boolean) => boolean;
     /** Generic change event. Triggered when the revision counter is increased. */
     onChange?: (this: RDblClickDragZoom, e: ObjectEvent) => void;
 }
