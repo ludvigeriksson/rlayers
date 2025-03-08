@@ -40,6 +40,7 @@ export interface ROverlayProps extends PropsWithChildren<unknown> {
     positioning?: Positioning;
     /** Called immediately on click */
     onClick?: (event: MouseEvent<HTMLDivElement>) => void;
+    style?: React.CSSProperties;
 }
 
 /**
@@ -108,6 +109,7 @@ export class ROverlayBase<P extends ROverlayProps> extends RlayersBase<P, Record
                     ref={this.containerRef}
                     className={this.props.className}
                     onClick={this.props.onClick}
+                    style={this.props.style}
                 >
                     {this.props.children}
                 </div>
