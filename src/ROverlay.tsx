@@ -70,7 +70,8 @@ export class ROverlayBase<P extends ROverlayProps> extends RlayersBase<P, Record
             autoPan: props.autoPan,
             offset: props.offset,
             position: props.position,
-            positioning: props.positioning
+            positioning: props.positioning,
+            className: props.className
         });
         this.containerRef = React.createRef();
     }
@@ -104,15 +105,8 @@ export class ROverlayBase<P extends ROverlayProps> extends RlayersBase<P, Record
     render(): JSX.Element {
         this.setPosition();
         return (
-            <div className='_rlayers_ROverlay'>
-                <div
-                    ref={this.containerRef}
-                    className={this.props.className}
-                    onClick={this.props.onClick}
-                    style={this.props.style}
-                >
-                    {this.props.children}
-                </div>
+            <div ref={this.containerRef} onClick={this.props.onClick} style={this.props.style}>
+                {this.props.children}
             </div>
         );
     }
