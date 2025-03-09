@@ -1,9 +1,10 @@
 import React, {PropsWithChildren} from 'react';
-import {Map, View, MapBrowserEvent, MapEvent} from 'ol';
-import RenderEvent from 'ol/render/Event';
 import BaseEvent from 'ol/events/Event';
-import {Extent} from 'ol/extent';
+import RenderEvent from 'ol/render/Event';
+import {Map, View, MapBrowserEvent, MapEvent} from 'ol';
 import {Coordinate} from 'ol/coordinate';
+import {Extent} from 'ol/extent';
+import {Interaction} from 'ol/interaction';
 import {ProjectionLike} from 'ol/proj';
 
 import {RContext} from './context';
@@ -49,6 +50,7 @@ export interface RMapProps extends PropsWithChildren<unknown> {
      * @default false
      */
     noDefaultInteractions?: boolean;
+    interactions?: Interaction[];
     /** View projection
      * @default 'ESPG:3857'
      */
@@ -130,7 +132,7 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
         this.target = React.createRef();
         this.ol = new Map({
             controls: props.noDefaultControls ? [] : undefined,
-            interactions: props.noDefaultInteractions ? [] : undefined,
+            interactions: props.interactions ?? (props.noDefaultInteractions ? [] : undefined),
             view: new View({
                 projection: props.projection,
                 center: props.initial.center,
@@ -169,17 +171,33 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
         const view = this.ol.getView();
         for (const p of ['minZoom', 'maxZoom', 'constrainResolution']) {
             const m = p.charAt(0).toUpperCase() + p.substring(1);
-            if (!prevProps || this.props[p] !== prevProps[p]) view['set' + m](this.props[p]);
+            if (!prevProps || this.props[p] !== prevProps[p]) {
+                view['set' + m](this.props[p]);
+            }
+        }
+        if (this.props.interactions !== prevProps?.interactions) {
+            this.ol.getInteractions().clear();
+            for (const interaction of this.props.interactions ?? []) {
+                this.ol.addInteraction(interaction);
+            }
         }
         if (this.props.view) {
             view.setCenter(this.props.view[0].center);
 
-            if (this.props.view[0].resolution === undefined) view.setZoom(this.props.view[0].zoom);
-            else view.setResolution(this.props.view[0].resolution);
+            if (this.props.view[0].resolution === undefined) {
+                view.setZoom(this.props.view[0].zoom);
+            } else {
+                view.setResolution(this.props.view[0].resolution);
+            }
         }
-        if (this.props.properties) this.ol.setProperties(this.props.properties);
-        if (this.props.view) this.ol.on('moveend', this.updateView);
-        else this.ol.un('moveend', this.updateView);
+        if (this.props.properties) {
+            this.ol.setProperties(this.props.properties);
+        }
+        if (this.props.view) {
+            this.ol.on('moveend', this.updateView);
+        } else {
+            this.ol.un('moveend', this.updateView);
+        }
     }
 
     render(): JSX.Element {
