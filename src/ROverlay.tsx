@@ -38,6 +38,12 @@ export interface ROverlayProps extends PropsWithChildren<unknown> {
     /** Anchor point
      * @default 'top-left' */
     positioning?: Positioning;
+    /** Whether event propagation to the map viewport should be stopped.
+     * If true the overlay is placed in the same container as that of the controls
+     * (CSS class name ol-overlaycontainer-stopevent);
+     * if false it is placed in the container with CSS class name specified
+     * by the className property. */
+    stopEvent?: boolean;
     /** Called immediately on click */
     onClick?: (event: MouseEvent<HTMLDivElement>) => void;
     style?: React.CSSProperties;
@@ -71,7 +77,8 @@ export class ROverlayBase<P extends ROverlayProps> extends RlayersBase<P, Record
             offset: props.offset,
             position: props.position,
             positioning: props.positioning,
-            className: props.className
+            className: props.className,
+            stopEvent: props.stopEvent
         });
         this.containerRef = React.createRef();
     }
