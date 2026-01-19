@@ -4,6 +4,7 @@ import {Layer} from 'ol/layer';
 import {Source} from 'ol/source';
 import LayerRenderer from 'ol/renderer/Layer';
 import {TileSourceEvent} from 'ol/source/Tile';
+import RenderEvent from 'ol/render/Event';
 
 import {default as RLayer, RLayerProps} from './RLayer';
 
@@ -17,6 +18,8 @@ export interface RLayerRasterProps extends RLayerProps {
     onTileLoadStart?: (this: RLayerRaster<RLayerRasterProps>, e: TileSourceEvent) => void;
     /** Called when tile loading results in an error */
     onTileLoadError?: (this: RLayerRaster<RLayerRasterProps>, e: TileSourceEvent) => void;
+    onPreRender?: (this: RLayerRaster<RLayerRasterProps>, e: RenderEvent) => boolean | void;
+    onPostRender?: (this: RLayerRaster<RLayerRasterProps>, e: RenderEvent) => boolean | void;
 }
 
 /** The common base of all tiled (even if not raster) layers, not meant to be used directly */
