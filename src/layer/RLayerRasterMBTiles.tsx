@@ -56,10 +56,9 @@ export interface RLayerRasterMBTilesProps extends RLayerRasterProps {
  */
 export default class RLayerRasterMBTiles extends RLayerRaster<RLayerRasterMBTilesProps> {
     addon: Promise<typeof MBTiles>;
-    metadata: Promise<MBTiles.MBTilesRasterOptions & MBTiles.SQLOptions>;
-    ol: LayerTile<MBTiles.MBTilesRasterSource>;
-    source: MBTiles.MBTilesRasterSource;
-    private abort: AbortController;
+    declare metadata: Promise<MBTiles.MBTilesRasterOptions & MBTiles.SQLOptions>;
+    declare ol: LayerTile<MBTiles.MBTilesRasterSource>;
+    private abort: AbortController | null = null;
 
     constructor(props: Readonly<RLayerRasterMBTilesProps>) {
         super(props);
@@ -86,13 +85,14 @@ export default class RLayerRasterMBTiles extends RLayerRaster<RLayerRasterMBTile
         Promise.all([this.addon, this.metadata]).then(([addon, md]) => {
             if (abort.signal.aborted) {
                 debug('createSource aborted', this);
-                md.pool.then((p) => p.close());
+                md.pool?.then((p) => p.close());
                 return;
             }
-            this.source = new addon.MBTilesRasterSource(md);
-            this.eventSources = [this.ol, this.source];
-            this.ol.setSource(this.source);
-            this.attachOldEventHandlers(this.source);
+            const source = new addon.MBTilesRasterSource(md);
+            this.source = source;
+            this.eventSources = [this.ol, source];
+            this.ol.setSource(source);
+            this.attachOldEventHandlers(source);
             if (this.props.onMetadataReady) this.props.onMetadataReady.call(this, md);
             return this.source;
         });

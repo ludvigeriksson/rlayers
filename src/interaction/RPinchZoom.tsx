@@ -19,7 +19,7 @@ export interface RPinchZoomProps {
 /** Zoom by pinching */
 export default class RPinchZoom extends RBaseInteraction<RPinchZoomProps> {
     protected static classProps = ['duration'];
-    ol: PinchZoom;
+    declare ol: PinchZoom;
 
     createOL(props: RPinchZoomProps): PinchZoom {
         this.classProps = RPinchZoom.classProps;

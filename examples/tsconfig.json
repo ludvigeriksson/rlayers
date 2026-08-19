@@ -17,8 +17,9 @@
         "baseUrl": "./",
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "downlevelIteration": true,
+        "skipLibCheck": true,
         "paths": {
             "rlayers": [
                 "../src"

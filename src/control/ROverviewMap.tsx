@@ -50,7 +50,7 @@ export default class ROverviewMap extends RControlBase<ROverviewProps, Record<st
 
     protected refresh(prevProps?: ROverviewProps): void {
         super.refresh(prevProps);
-        if (prevProps?.collapsed !== this.props.collapsed)
+        if (prevProps?.collapsed !== this.props.collapsed && this.props.collapsed !== undefined)
             this.ol.setCollapsed(this.props.collapsed);
     }
 

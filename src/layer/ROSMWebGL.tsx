@@ -19,7 +19,7 @@ export interface ROSMWebGLProps extends RLayerWebGLProps {}
  * Requires an `RMap` context
  */
 export default class ROSMWebGL extends RLayerWebGL<ROSMWebGLProps, ImageTile> {
-    source: SourceDataTile<ImageTile>;
+    declare source: SourceDataTile<ImageTile>;
 
     constructor(props: Readonly<ROSMWebGLProps>) {
         super(props);

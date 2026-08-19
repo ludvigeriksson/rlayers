@@ -28,9 +28,9 @@ export interface RLayerClusterProps extends RLayerBaseVectorProps<Feature<Geomet
  * Not compatible with a vector layer context for JSX-declared RFeatures
  */
 export default class RLayerCluster extends RLayerBaseVector<Feature<Geometry>, RLayerClusterProps> {
-    ol: LayerVector<SourceVector<Feature<Geometry>>, Feature<Geometry>>;
-    source: SourceCluster<Feature<Geometry>>;
-    cluster: SourceVector<Feature<Geometry>>;
+    declare ol: LayerVector<SourceVector<Feature<Geometry>>, Feature<Geometry>>;
+    declare source: SourceCluster<Feature<Geometry>>;
+    declare cluster: SourceVector<Feature<Geometry>>;
 
     protected createSource(props: Readonly<RLayerClusterProps>): BaseObject[] {
         this.cluster = new SourceVector<Feature<Geometry>>({
@@ -46,7 +46,11 @@ export default class RLayerCluster extends RLayerBaseVector<Feature<Geometry>, R
             source: this.cluster,
             distance: this.props.distance
         });
-        const style = isOLFlatStyle(props.style) ? props.style : RStyle.getStyle(props.style);
+        const style = props.style
+            ? isOLFlatStyle(props.style)
+                ? props.style
+                : RStyle.getStyle(props.style)
+            : undefined;
         this.ol = new LayerVector<SourceVector<Feature<Geometry>>, Feature<Geometry>>({
             ...props,
             source: this.source,
@@ -57,8 +61,9 @@ export default class RLayerCluster extends RLayerBaseVector<Feature<Geometry>, R
 
     protected refresh(prev?: RLayerClusterProps): void {
         super.refresh(prev);
-        if (prev?.distance !== this.props.distance) this.source.setDistance(this.props.distance);
-        if (prev?.url !== this.props.url) {
+        if (prev?.distance !== this.props.distance && this.props.distance !== undefined)
+            this.source.setDistance(this.props.distance);
+        if (prev?.url !== this.props.url && this.props.url !== undefined) {
             this.cluster.setUrl(this.props.url);
             this.cluster.refresh();
         }
@@ -77,7 +82,7 @@ export default class RLayerCluster extends RLayerBaseVector<Feature<Geometry>, R
                             vectorsource: this.cluster,
                             rLayer: this,
                             rLayerVector: this
-                        } as RContextType
+                        } as unknown as RContextType
                     }
                 >
                     {this.props.children}

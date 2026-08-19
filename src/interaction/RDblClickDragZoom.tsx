@@ -25,7 +25,7 @@ export interface RDblClickDragZoomProps {
  */
 export default class RDblClickDragZoom extends RBaseInteraction<RDblClickDragZoomProps> {
     protected static classProps = ['duration', 'delta', 'stopDown'];
-    ol: DblClickDragZoom;
+    declare ol: DblClickDragZoom;
 
     createOL(props: RDblClickDragZoomProps): DblClickDragZoom {
         this.classProps = RDblClickDragZoom.classProps;

@@ -25,7 +25,7 @@ type Background = {
  */
 export default class RBackground extends RBaseStyle<RBackgroundProps> {
     protected static classProps = [];
-    ol: Background;
+    declare ol: Background;
 
     protected create(props: RBackgroundProps): Background {
         this.classProps = RBackground.classProps;

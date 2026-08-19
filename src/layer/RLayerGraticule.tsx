@@ -67,7 +67,7 @@ export interface RLayerGraticuleProps extends RLayerProps {
  * A layer that renders a static image
  */
 export default class RLayerGraticule extends RLayer<RLayerGraticuleProps> {
-    ol: LayerGraticule;
+    declare ol: LayerGraticule;
 
     constructor(props: Readonly<RLayerGraticuleProps>) {
         super(props);
@@ -80,9 +80,9 @@ export default class RLayerGraticule extends RLayer<RLayerGraticuleProps> {
         const latText = RStyle.getStyleStatic(this.props.latLabelStyle)?.getText?.();
         this.ol = new LayerGraticule({
             ...this.props,
-            strokeStyle: stroke,
-            lonLabelStyle: lonText,
-            latLabelStyle: latText
+            strokeStyle: stroke ?? undefined,
+            lonLabelStyle: lonText ?? undefined,
+            latLabelStyle: latText ?? undefined
         });
         this.eventSources = [this.ol];
         return;
@@ -90,9 +90,9 @@ export default class RLayerGraticule extends RLayer<RLayerGraticuleProps> {
 
     protected refresh(prevProps?: RLayerGraticuleProps): void {
         super.refresh(prevProps);
-        const old = this.context.map.removeLayer(this.ol);
+        const old = this.context.map!.removeLayer(this.ol);
         this.createSource();
         this.attachOldEventHandlers(this.ol);
-        if (old) this.context.map.addLayer(this.ol);
+        if (old) this.context.map!.addLayer(this.ol);
     }
 }

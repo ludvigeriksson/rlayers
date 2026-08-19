@@ -25,7 +25,7 @@ export interface RKeyboardPanProps {
 /** Pan with the arrow keys on the keyboard */
 export default class RKeyboardPan extends RBaseInteraction<RKeyboardPanProps> {
     protected static classProps = ['condition', 'duration', 'pixelDelta'];
-    ol: KeyboardPan;
+    declare ol: KeyboardPan;
 
     createOL(props: RKeyboardPanProps): KeyboardPan {
         this.classProps = RKeyboardPan.classProps;

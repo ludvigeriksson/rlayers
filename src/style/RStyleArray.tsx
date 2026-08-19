@@ -1,8 +1,7 @@
 import React, {JSX} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Feature} from 'ol';
+import {FeatureLike} from 'ol/Feature';
 import Style from 'ol/style/Style';
-import Geometry from 'ol/geom/Geometry';
 
 import {RContext, RContextType} from '../context';
 import {default as RStyle, RStyleProps} from './RStyle';
@@ -29,7 +28,7 @@ export default class RStyleArray extends RStyle {
         else this.ol = [];
     }
 
-    style = (f: Feature<Geometry>, r: number): Style | Style[] => {
+    style = (f: FeatureLike, r: number): Style | Style[] => {
         if (this.props.render) {
             const element = this.props.render(f, r);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

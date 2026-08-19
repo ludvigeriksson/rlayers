@@ -34,8 +34,8 @@ export interface RLayerTileWebGLProps extends RLayerWebGLProps {
  * Requires an `RMap` context
  */
 export default class RLayerTileWebGL extends RLayerWebGL<RLayerTileWebGLProps, ImageTile> {
-    ol: LayerTileWebGL;
-    source: SourceImageTile;
+    declare ol: LayerTileWebGL;
+    declare source: SourceImageTile;
 
     constructor(props: Readonly<RLayerTileWebGLProps>) {
         super(props);

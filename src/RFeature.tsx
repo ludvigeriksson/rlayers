@@ -18,11 +18,11 @@ import debug from './debug';
 export class RFeatureUIEvent<F extends FeatureLike> extends MapBrowserEvent<
     PointerEvent | KeyboardEvent | WheelEvent
 > {
-    target: F;
+    declare target: F;
 }
 
 export class RFeatureBaseEvent<F extends FeatureLike> extends BaseEvent {
-    target: F;
+    declare target: F;
 }
 
 /**
@@ -66,8 +66,12 @@ export interface RFeatureProps<G extends Geometry = Geometry> extends PropsWithC
 }
 
 type FeatureRef<G extends Geometry = Geometry> = {
-    feature: Feature<G>;
-    layer: BaseVectorLayer<FeatureLike, SourceVector<FeatureLike>, CanvasVectorLayerRenderer>;
+    feature: Feature<G> | null;
+    layer: BaseVectorLayer<
+        FeatureLike,
+        SourceVector<FeatureLike>,
+        CanvasVectorLayerRenderer
+    > | null;
 };
 
 /**
@@ -125,14 +129,14 @@ export default class RFeature<G extends Geometry = Geometry> extends RlayersBase
     protected incrementHandlers(ev: OLEvent): void {
         const featureHandlers = RlayersBase.getOLObject<FeatureHandlers>(
             featureHandlersSymbol,
-            this.context.vectorlayer
+            this.context.vectorlayer!
         );
         featureHandlers[ev] = (featureHandlers[ev] ?? 0) + 1;
     }
     protected decrementHandlers(ev: OLEvent): void {
         const featureHandlers = RlayersBase.getOLObject<FeatureHandlers>(
             featureHandlersSymbol,
-            this.context.vectorlayer
+            this.context.vectorlayer!
         );
         featureHandlers[ev]--;
     }
@@ -158,14 +162,15 @@ export default class RFeature<G extends Geometry = Geometry> extends RlayersBase
         const triggered: FeatureRef[] = [];
         e.map.forEachFeatureAtPixel(
             e.pixel,
-            (
-                f: Feature<Geometry>,
-                l: BaseVectorLayer<
-                    FeatureLike,
-                    SourceVector<FeatureLike>,
-                    CanvasVectorLayerRenderer
-                >
-            ) => triggered.push({feature: f, layer: l}) && false,
+            (f: FeatureLike, l) =>
+                triggered.push({
+                    feature: f as Feature<Geometry>,
+                    layer: l as BaseVectorLayer<
+                        FeatureLike,
+                        SourceVector<FeatureLike>,
+                        CanvasVectorLayerRenderer
+                    >
+                }) && false,
             {
                 hitTolerance: RFeature.hitTolerance,
                 layerFilter: (layer) => {
@@ -269,30 +274,32 @@ export default class RFeature<G extends Geometry = Geometry> extends RlayersBase
             this.ol = this.props.feature;
             this.componentDidMount();
         }
-        if (this.props.properties !== prevProps?.properties)
+        if (this.props.properties !== prevProps?.properties && this.props.properties)
             this.ol.setProperties(this.props.properties);
         if (this.props.geometry !== prevProps?.geometry) this.ol.setGeometry(this.props.geometry);
-        if (this.props.style !== prevProps?.style)
-            this.ol.setStyle(RStyle.getStyle(this.props.style));
+        if (this.props.style !== prevProps?.style) {
+            const style = RStyle.getStyle(this.props.style);
+            if (style) this.ol.setStyle(style);
+        }
     }
 
     componentDidMount(): void {
         debug('didMount', this.ol);
         super.componentDidMount();
         this.ol.on('change', this.onchange);
-        this.context.vectorsource.addFeature(this.ol);
+        this.context.vectorsource!.addFeature(this.ol);
     }
 
     componentWillUnmount(): void {
         super.componentWillUnmount();
         this.ol.un('change', this.onchange);
-        this.context.vectorsource.removeFeature(this.ol);
+        this.context.vectorsource!.removeFeature(this.ol);
     }
 
     render(): JSX.Element {
         if (!this?.context?.vectorlayer)
             throw new Error('An RFeature must be part of a vector layer');
-        RFeature.initEventRelay(this.context.map);
+        RFeature.initEventRelay(this.context.map!);
         const extent = this.ol?.getGeometry()?.getExtent();
         const center = extent && getCenter(extent);
         return (
@@ -304,7 +311,7 @@ export default class RFeature<G extends Geometry = Geometry> extends RlayersBase
                             feature: this.ol,
                             rFeature: this,
                             location: center
-                        } as RContextType
+                        } as unknown as RContextType
                     }
                 >
                     {this.props.children}

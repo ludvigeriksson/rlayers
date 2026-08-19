@@ -20,7 +20,7 @@ export interface RDragPanProps {
 /** Panning by dragging */
 export default class RDragPan extends RBaseInteraction<RDragPanProps> {
     protected static classProps = ['condition', 'kinetic'];
-    ol: DragPan;
+    declare ol: DragPan;
 
     createOL(props: RDragPanProps): DragPan {
         this.classProps = RDragPan.classProps;

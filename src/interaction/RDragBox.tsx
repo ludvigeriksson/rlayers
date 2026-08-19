@@ -33,7 +33,7 @@ export interface RDragBoxProps {
 /** A dragbox, can be used for selecting features, see `RDragZoom` for zooming */
 export default class RDragBox extends RPointer<RDragBoxProps> {
     protected static classProps = ['className', 'condition', 'minArea', 'boxEndCondition'];
-    ol: DragBox;
+    declare ol: DragBox;
 
     createOL(props: RDragBoxProps): DragBox {
         this.classProps = RDragBox.classProps;

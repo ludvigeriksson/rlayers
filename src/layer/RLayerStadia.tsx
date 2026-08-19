@@ -29,8 +29,8 @@ export interface RLayerStadiaProps extends RLayerRasterProps {
  * Requires an `RMap` context
  */
 export default class RLayerStadia extends RLayerRaster<RLayerStadiaProps> {
-    ol: LayerTile<StadiaMaps>;
-    source: StadiaMaps;
+    declare ol: LayerTile<StadiaMaps>;
+    declare source: StadiaMaps;
 
     constructor(props: Readonly<RLayerStadiaProps>) {
         super(props);

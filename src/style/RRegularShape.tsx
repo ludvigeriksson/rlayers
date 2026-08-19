@@ -32,7 +32,7 @@ export default class RRegularShape extends RRegularBase<RRegularShapeProps> {
         'points',
         'angle'
     ]);
-    ol: RegularShape;
+    declare ol: RegularShape;
 
     protected create(props: RRegularShapeProps): RegularShape {
         this.classProps = RRegularShape.classProps;

@@ -62,8 +62,8 @@ describe('<RLayerTile>', () => {
                 />
             </RMap>
         );
-        expect(layer.current?.source.getTileGrid()?.getMaxZoom()).toBe(20);
-        expect(layer.current?.source.getProjection()?.getCode()).toBe('EPSG:4326');
+        expect(layer.current?.source!.getTileGrid()?.getMaxZoom()).toBe(20);
+        expect(layer.current?.source!.getProjection()?.getCode()).toBe('EPSG:4326');
     });
 
     it('should relay tile events', async () => {
@@ -83,7 +83,7 @@ describe('<RLayerTile>', () => {
         );
         if (map.current === null) throw new Error('failed rendering map');
         for (const ev of events)
-            layer.current?.source.dispatchEvent(common.createEvent(ev, map.current.ol));
+            layer.current?.source!.dispatchEvent(common.createEvent(ev, map.current.ol));
         expect(handler).toHaveBeenCalledTimes(events.length);
     });
 });
@@ -122,7 +122,7 @@ describe('<RLayerWMTS>', () => {
             );
             expect(container.innerHTML).toMatchSnapshot();
         });
-        expect((layer.current?.source.getUrls() || [])[0]).toBe(
+        expect((layer.current?.source!.getUrls() || [])[0]).toBe(
             'https://tiles.arcgis.com/tiles/qHLhLQrcvEnxjtPr/arcgis/rest/services/OS_Open_Raster/MapServer/WMTS/tile/1.0.0/OS_Open_Raster/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png'
         );
     });
@@ -298,7 +298,7 @@ describe('<RLayerWMTS>', () => {
                                     expect(this).toBeInstanceOf(RLayerWMTS);
                                     expect(opt.projection).toBe(expectedProjection);
                                     expect(opt.matrixSet).toBe(expectedMatrixSet);
-                                    expect(this.source.getMatrixSet()).toBe(expectedMatrixSet);
+                                    expect(this.source!.getMatrixSet()).toBe(expectedMatrixSet);
                                     renderSource = layer.current?.ol.getSource();
                                     res(undefined);
                                 } catch (e) {
@@ -312,7 +312,7 @@ describe('<RLayerWMTS>', () => {
                 );
                 expect(renderResult.container.innerHTML).toMatchSnapshot();
             });
-            expect((layer.current?.source.getUrls() || [])[0]).toBe(
+            expect((layer.current?.source!.getUrls() || [])[0]).toBe(
                 'https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_farbe/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png'
             );
             await new Promise((res, rej) => {

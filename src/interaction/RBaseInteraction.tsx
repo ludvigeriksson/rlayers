@@ -11,12 +11,11 @@ import debug from '../debug';
  */
 export default class RBaseInteraction<P> extends RlayersBase<P, Record<string, never>> {
     protected static classProps: string[] = [];
-    classProps: string[];
-    ol: Interaction;
+    classProps!: string[];
+    declare ol: Interaction;
 
     constructor(props: P) {
         super(props);
-        this.ol = null;
     }
 
     createOL(props: P): Interaction {
@@ -35,20 +34,25 @@ export default class RBaseInteraction<P> extends RlayersBase<P, Record<string, n
         super.refresh(prevProps);
     }
 
+    private olReady = false;
+
     componentDidMount(): void {
         super.componentDidMount();
-        this.context.map.addInteraction(this.ol);
+        this.context.map!.addInteraction(this.ol);
     }
 
     componentWillUnmount(): void {
         super.componentWillUnmount();
-        this.context.map.removeInteraction(this.ol);
+        this.context.map!.removeInteraction(this.ol);
     }
 
     render(): React.JSX.Element {
         if (!this.context?.map?.addInteraction)
             throw new Error('An interaction must be part of a map');
-        if (this.ol === null) this.ol = this.createOL(this.props);
-        return super.render();
+        if (!this.olReady) {
+            this.ol = this.createOL(this.props);
+            this.olReady = true;
+        }
+        return super.render() as React.JSX.Element;
     }
 }

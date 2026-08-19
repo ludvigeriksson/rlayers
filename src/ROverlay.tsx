@@ -63,7 +63,7 @@ export interface ROverlayProps extends PropsWithChildren<unknown> {
  */
 export class ROverlayBase<P extends ROverlayProps> extends RlayersBase<P, Record<string, never>> {
     ol: Overlay;
-    protected containerRef: React.RefObject<HTMLDivElement>;
+    protected containerRef: React.RefObject<HTMLDivElement | null>;
 
     constructor(props: Readonly<P>, context?: React.Context<RContextType>) {
         super(props, context);
@@ -89,24 +89,24 @@ export class ROverlayBase<P extends ROverlayProps> extends RlayersBase<P, Record
 
     protected refresh(prevProps?: P): void {
         super.refresh(prevProps);
-        this.ol.setElement(this.containerRef.current);
+        this.ol.setElement(this.containerRef.current ?? undefined);
         this.setPosition();
-        if (this.props.offset !== prevProps?.offset) {
+        if (this.props.offset !== prevProps?.offset && this.props.offset !== undefined) {
             this.ol.setOffset(this.props.offset);
         }
-        if (this.props.positioning !== prevProps?.positioning) {
+        if (this.props.positioning !== prevProps?.positioning && this.props.positioning !== undefined) {
             this.ol.setPositioning(this.props.positioning);
         }
     }
 
     componentDidMount(): void {
         super.componentDidMount();
-        this.context.map.addOverlay(this.ol);
+        this.context.map!.addOverlay(this.ol);
     }
 
     componentWillUnmount(): void {
         super.componentWillUnmount();
-        this.context.map.removeOverlay(this.ol);
+        this.context.map!.removeOverlay(this.ol);
     }
 
     render(): JSX.Element {

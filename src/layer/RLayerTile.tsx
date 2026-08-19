@@ -40,8 +40,8 @@ export interface RLayerTileProps extends RLayerRasterProps {
  * Requires an `RMap` context
  */
 export default class RLayerTile extends RLayerRaster<RLayerTileProps> {
-    ol: LayerTile<XYZ>;
-    source: XYZ;
+    declare ol: LayerTile<XYZ>;
+    declare source: XYZ;
 
     constructor(props: Readonly<RLayerTileProps>) {
         super(props);

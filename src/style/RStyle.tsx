@@ -2,6 +2,7 @@ import React, {JSX, PropsWithChildren} from 'react';
 import {createRoot} from 'react-dom/client';
 import {LRUCache} from 'lru-cache';
 import {Map, Feature} from 'ol';
+import {FeatureLike} from 'ol/Feature';
 import Style, {StyleLike} from 'ol/style/Style';
 import Geometry from 'ol/geom/Geometry';
 import {FlatStyleLike} from 'ol/style/flat';
@@ -19,25 +20,29 @@ export interface RStyleProps extends PropsWithChildren<unknown> {
      *
      * a dynamic style cannot become a static style or the inverse
      */
-    render?: (feature: Feature<Geometry>, resolution: number) => React.ReactElement;
+    render?: (feature: FeatureLike, resolution: number) => React.ReactElement;
     /** An optional cache size, valid only for dynamic styles */
     cacheSize?: number;
     /** The cache hashing function, must return a unique string for
      * every unique style computed by the rendering function
      */
-    cacheId?: (feature: Feature<Geometry>, resolution: number) => string;
+    cacheId?: (feature: FeatureLike, resolution: number) => string;
     /** zIndex controls which features are drawn over which features
      * when they overlap
      */
     zIndex?: number;
 }
 
-export type RStyleRef = React.RefObject<RStyle>;
+export type RStyleRef = React.RefObject<RStyle | null>;
 export type RStyleLike = RStyleRef | RStyle | StyleLike;
-export const useRStyle = (): RStyleRef => React.useRef(undefined);
-export const createRStyle = (): RStyleRef => React.createRef();
+export const useRStyle = (): RStyleRef => React.useRef<RStyle>(null);
+export const createRStyle = (): RStyleRef => React.createRef<RStyle>();
+export const createRStyleArrayRef = (): React.RefObject<RStyleArray | null> =>
+    React.createRef<RStyleArray>();
 
-export function isOLFlatStyle(style: RStyleLike | FlatStyleLike): style is FlatStyleLike {
+export function isOLFlatStyle(
+    style: RStyleLike | FlatStyleLike | null | undefined
+): style is FlatStyleLike {
     if (!style) return false;
     if (Array.isArray(style)) return 'style' in style[0];
     if (typeof style === 'function') return false;
@@ -62,10 +67,10 @@ export function isOLFlatStyle(style: RStyleLike | FlatStyleLike): style is FlatS
  */
 export default class RStyle extends React.PureComponent<RStyleProps, Record<string, never>> {
     static contextType = RContext;
-    context: RContextType;
+    declare context: RContextType;
     ol: StyleLike;
-    childRefs: RStyleRef[];
-    cache: LRUCache<string, Style>;
+    childRefs!: RStyleRef[];
+    cache?: LRUCache<string, Style>;
 
     constructor(props: Readonly<RStyleProps>) {
         super(props);
@@ -75,10 +80,10 @@ export default class RStyle extends React.PureComponent<RStyleProps, Record<stri
             this.cache = new LRUCache({max: props.cacheSize});
     }
 
-    style = (f: Feature<Geometry>, r: number): Style | Style[] => {
+    style = (f: FeatureLike, r: number): Style | Style[] => {
         if (this.ol !== this.style) return this.ol as Style;
-        let hash: string;
-        if (this.cache) {
+        let hash = '';
+        if (this.cache && this.props.cacheId) {
             hash = this.props.cacheId(f, r);
             const style = this.cache.get(hash);
             if (style) return style;
@@ -86,7 +91,7 @@ export default class RStyle extends React.PureComponent<RStyleProps, Record<stri
         const style = new Style({zIndex: this.props.zIndex});
         const reactElement = (
             <RContext.Provider value={{...this.context, style}}>
-                {this.props.render(f, r)}
+                {this.props.render!(f, r)}
             </RContext.Provider>
         );
         const root = createRoot(document.createElement('div'));
@@ -134,7 +139,7 @@ export default class RStyle extends React.PureComponent<RStyleProps, Record<stri
             (this.ol as Style).setZIndex(this.props.zIndex);
     }
 
-    render(): JSX.Element {
+    render(): React.ReactNode {
         if (this.props.render) return null;
         return (
             <div className='_rlayers_RStyle'>
@@ -151,18 +156,18 @@ export default class RStyle extends React.PureComponent<RStyleProps, Record<stri
      * @param {RStyleLike} style
      * @public
      */
-    static getStyle(style: RStyleLike): StyleLike {
+    static getStyle(style: RStyleLike | null | undefined): StyleLike | undefined {
         // style is undefined or null
-        if (style === null || style === undefined) return style as StyleLike;
+        if (style === null || style === undefined) return undefined;
 
         // style is RStyle or RStyleArray
         if (typeof (style as RStyle).style === 'function')
-            return (f: Feature<Geometry>, r: number) => (style as RStyle).style(f, r);
+            return (f: FeatureLike, r: number) => (style as RStyle).style(f, r);
 
         // style is a React.RefObject
         // React.RefObjects are just plain JS objects after JS transpilation */
         if (Object.keys(style).includes('current'))
-            return (f: Feature<Geometry>, r: number) => (style as RStyleRef).current.style(f, r);
+            return (f: FeatureLike, r: number) => (style as RStyleRef).current!.style(f, r);
 
         // style is an OpenLayers StyleLike
         return style as StyleLike;
@@ -178,9 +183,9 @@ export default class RStyle extends React.PureComponent<RStyleProps, Record<stri
      * @param {RStyleLike} style
      * @public
      */
-    static getStyleStatic(style: RStyleLike): Style {
+    static getStyleStatic(style: RStyleLike | null | undefined): Style | undefined {
         // style is undefined or null
-        if (style === null || style === undefined) return style as Style;
+        if (style === null || style === undefined) return undefined;
 
         let asRStyle;
 

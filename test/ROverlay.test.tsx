@@ -86,7 +86,7 @@ describe('<ROverlay>', () => {
                         style={common.styles.blueDot}
                         geometry={new Point(common.coords.ArcDeTriomphe)}
                     >
-                        <ROverlay autoPosition={auto}>
+                        <ROverlay autoPan={auto}>
                             <div id='target'>text14</div>
                         </ROverlay>
                     </RFeature>

@@ -17,7 +17,7 @@ export interface ROSMProps extends RLayerRasterProps {}
  * Requires an `RMap` context
  */
 export default class ROSM extends LayerRaster<ROSMProps> {
-    source: OSM;
+    declare source: OSM;
 
     constructor(props: Readonly<ROSMProps>) {
         super(props);

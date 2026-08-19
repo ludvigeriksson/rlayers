@@ -32,7 +32,7 @@ export default class RImage<P extends RImageProps> extends RBaseStyle<P> {
         'scale',
         'displacement'
     ];
-    ol: Image;
+    declare ol: Image;
 
     /* istanbul ignore next */
     protected create(props: P): Image {
@@ -40,7 +40,7 @@ export default class RImage<P extends RImageProps> extends RBaseStyle<P> {
     }
 
     protected set(ol: Image): void {
-        if (!this.context.style.setImage)
+        if (!this.context.style?.setImage)
             throw new Error('Parent element does not support an image');
         this.context.style.setImage(ol);
     }

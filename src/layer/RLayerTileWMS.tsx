@@ -17,8 +17,8 @@ export interface RLayerTileWMSProps extends RLayerRasterProps {
  * Tiled layer using WMS
  */
 export default class RLayerTileWMS extends RLayerRaster<RLayerTileWMSProps> {
-    ol: TileLayer<TileWMS>;
-    source: TileWMS;
+    declare ol: TileLayer<TileWMS>;
+    declare source: TileWMS;
 
     constructor(props: Readonly<RLayerTileWMSProps>) {
         super(props);
@@ -31,7 +31,7 @@ export default class RLayerTileWMS extends RLayerRaster<RLayerTileWMSProps> {
         const {params, url, projection, attributions} = this.props;
         const options = {params, url, projection, attributions};
 
-        this.source = new TileWMS(options);
+        this.source = new TileWMS({params: params ?? {}, url, projection, attributions});
         this.eventSources = [this.ol, this.source];
     }
 

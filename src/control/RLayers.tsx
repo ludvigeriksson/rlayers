@@ -26,8 +26,8 @@ export interface RLayersState {
  * Requires an `RMap` context
  */
 export default class RLayers extends RControlBase<RLayersProps, RLayersState> {
-    ol: Control;
-    targetRef: React.RefObject<HTMLDivElement>;
+    ol!: Control;
+    targetRef: React.RefObject<HTMLDivElement | null>;
 
     constructor(props: Readonly<RLayersProps>) {
         super(props);
@@ -40,19 +40,19 @@ export default class RLayers extends RControlBase<RLayersProps, RLayersState> {
     componentDidMount(): void {
         this.ol = new Control(this.toOLProps(this.props));
         super.componentDidMount();
-        this.context.map.on('change', this.onchange);
+        this.context.map!.on('change', this.onchange);
         this.forceUpdate();
     }
 
     componentWillUnmount(): void {
         super.componentWillUnmount();
-        this.context.map.un('change', this.onchange);
+        this.context.map!.un('change', this.onchange);
     }
 
     toOLProps(props: RLayersProps): RControlOptions {
         return {
             ...super.toOLProps(props),
-            element: this.targetRef?.current
+            element: this.targetRef.current ?? undefined
         };
     }
 
@@ -109,7 +109,9 @@ export default class RLayers extends RControlBase<RLayersProps, RLayersState> {
                 </div>
                 {React.Children.map(this.props.children, (child, i) => {
                     if (React.isValidElement(child)) {
-                        return React.cloneElement<RLayerProps>(child, {visible: visible[i]});
+                        return React.cloneElement(child as React.ReactElement<RLayerProps>, {
+                            visible: visible[i]
+                        });
                     }
                     return child;
                 })}

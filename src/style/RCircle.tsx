@@ -21,7 +21,7 @@ export interface RCircleProps extends RRegularBaseProps {
  */
 export default class RCircle extends RRegularBase<RCircleProps> {
     protected static classProps = RRegularBase.classProps.concat(['radius']);
-    ol: Circle;
+    declare ol: Circle;
 
     protected create(props: RCircleProps): Circle {
         this.classProps = RCircle.classProps;

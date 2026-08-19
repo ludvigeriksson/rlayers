@@ -28,7 +28,7 @@ export interface RControlOptions extends OLOptions {
  * An abstract class serving as base for all controls, not meant to be used directly
  */
 export default class RControlBase<P extends RControlProps, S> extends RlayersBase<P, S> {
-    ol: Control;
+    ol!: Control;
 
     constructor(props: Readonly<P>) {
         super(props);
@@ -48,15 +48,15 @@ export default class RControlBase<P extends RControlProps, S> extends RlayersBas
 
     componentDidMount(): void {
         super.componentDidMount();
-        this.context.map.addControl(this.ol);
+        this.context.map!.addControl(this.ol);
     }
 
     componentWillUnmount(): void {
         super.componentWillUnmount();
-        this.context.map.removeControl(this.ol);
+        this.context.map!.removeControl(this.ol);
     }
 
-    render(): React.JSX.Element {
+    render(): React.ReactNode {
         if (!this.context?.map) throw new Error('A control must be part of a map');
         return super.render();
     }

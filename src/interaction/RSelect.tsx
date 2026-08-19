@@ -18,7 +18,7 @@ export interface RSelectProps {
      * of toggle.
      * @default never
      */
-    addCondition?: (e: MapBrowserEvent<UIEvent>) => boolean;
+    addCondition?: (e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>) => boolean;
 
     /**
      * An optional OpenLayers condition.
@@ -29,7 +29,7 @@ export interface RSelectProps {
      * to/from the selection.
      * @default singleClick
      */
-    condition?: (e: MapBrowserEvent<UIEvent>) => boolean;
+    condition?: (e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>) => boolean;
 
     /**
      * If placed inside a vector layer, RSelect will only select features
@@ -58,14 +58,14 @@ export interface RSelectProps {
      * of toggle.
      * @default never
      */
-    removeCondition?: (e: MapBrowserEvent<UIEvent>) => boolean;
+    removeCondition?: (e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>) => boolean;
 
     /**
      * An optional OpenLayers condition to allow toggling the selection.
      * This is in addition to the condition event. See add and remove if
      * you want to use different events instead of a toggle.
      * @default shiftKeyOnly */
-    toggleCondition?: (e: MapBrowserEvent<UIEvent>) => boolean;
+    toggleCondition?: (e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>) => boolean;
 
     /**
      * A boolean that determines if the default behaviour should select
@@ -121,7 +121,7 @@ export default class RSelect extends RBaseInteraction<RSelectProps> {
         'filter',
         'hitTolerance'
     ];
-    ol: Select;
+    declare ol: Select;
 
     createOL(props: RSelectProps): Select {
         this.classProps = RSelect.classProps;

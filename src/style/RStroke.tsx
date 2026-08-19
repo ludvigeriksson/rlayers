@@ -34,7 +34,7 @@ export interface RStrokeProps extends RBaseStyleProps {
  */
 export default class RStroke extends RBaseStyle<RStrokeProps> {
     protected static classProps = ['color', 'width', 'lineCap', 'lineJoin', 'lineDash'];
-    ol: Stroke;
+    declare ol: Stroke;
 
     protected create(props: RStrokeProps): Stroke {
         this.classProps = RStroke.classProps;
@@ -42,7 +42,7 @@ export default class RStroke extends RBaseStyle<RStrokeProps> {
     }
 
     protected set(ol: Stroke): void {
-        if (this.context.style.setStroke) return this.context.style.setStroke(ol);
+        if (this.context.style?.setStroke) return this.context.style.setStroke(ol);
         /* istanbul ignore next */
         throw new Error('Parent element does not support a stroke');
     }

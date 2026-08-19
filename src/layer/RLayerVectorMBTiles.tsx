@@ -95,16 +95,15 @@ export default class RLayerVectorMBTiles<
     F extends FeatureLike = RenderFeature
 > extends RLayerRaster<RLayerVectorMBTilesProps> {
     addon: Promise<typeof MBTiles>;
-    metadata: Promise<MBTiles.MBTilesVectorOptions & MBTiles.SQLOptions>;
-    ol: LayerVectorTile<MBTiles.MBTilesVectorSource<F>, F>;
-    source: MBTiles.MBTilesVectorSource<F>;
-    private abort: AbortController;
+    declare metadata: Promise<MBTiles.MBTilesVectorOptions & MBTiles.SQLOptions>;
+    declare ol: LayerVectorTile<MBTiles.MBTilesVectorSource<F>, F>;
+    private abort: AbortController | null = null;
 
     constructor(props: Readonly<RLayerVectorMBTilesProps>) {
         super(props);
         this.addon = import('ol-mbtiles');
         this.ol = new LayerVectorTile({
-            style: RStyle.getStyle(this.props.style),
+            style: this.props.style ? RStyle.getStyle(this.props.style) : undefined,
             renderBuffer: this.props.renderBuffer,
             className: this.props.className
         });
@@ -127,14 +126,16 @@ export default class RLayerVectorMBTiles<
         Promise.all([this.addon, this.metadata]).then(([addon, md]) => {
             if (abort.signal.aborted) {
                 debug('createSource aborted', this);
-                md.pool.then((p) => p.close());
+                md.pool?.then((p) => p.close());
                 return;
             }
-            this.source = new addon.MBTilesVectorSource(md);
-            this.eventSources = [this.ol, this.source];
-            this.ol.setSource(this.source);
-            this.attachOldEventHandlers(this.source);
-            if (this.props.onMetadataReady) this.props.onMetadataReady.call(this, md);
+            const source = new addon.MBTilesVectorSource(md);
+            this.source = source;
+            this.eventSources = [this.ol, source];
+            this.ol.setSource(source as unknown as MBTiles.MBTilesVectorSource<F>);
+            this.attachOldEventHandlers(source);
+            if (this.props.onMetadataReady)
+                this.props.onMetadataReady.call(this as unknown as RLayerVectorMBTiles, md);
             return this.source;
         });
     }
@@ -172,7 +173,7 @@ export default class RLayerVectorMBTiles<
     }
 
     render(): JSX.Element {
-        RFeature.initEventRelay(this.context.map);
+        RFeature.initEventRelay(this.context.map!);
         return (
             <div className='_rlayers_RLayerVectorMBTiles'>
                 <RContext.Provider
@@ -182,7 +183,7 @@ export default class RLayerVectorMBTiles<
                             layer: this.ol,
                             vectortilelayer: this.ol,
                             rLayer: this
-                        } as RContextType
+                        } as unknown as RContextType
                     }
                 >
                     {this.props.children}

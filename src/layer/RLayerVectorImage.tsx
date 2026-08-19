@@ -23,8 +23,8 @@ export default class RLayerVectorImage extends RLayerBaseVector<
     Feature,
     RLayerBaseVectorProps<Feature>
 > {
-    ol: LayerVectorImage<SourceVector<Feature>>;
-    source: SourceVector<Feature>;
+    declare ol: LayerVectorImage<SourceVector<Feature>>;
+    declare source: SourceVector<Feature>;
 
     protected createSource(props: Readonly<RLayerBaseVectorProps<Feature>>): BaseObject[] {
         this.source = new SourceVector({
@@ -36,7 +36,11 @@ export default class RLayerVectorImage extends RLayerBaseVector<
             strategy: this.props.strategy,
             attributions: this.props.attributions
         });
-        const style = isOLFlatStyle(props.style) ? props.style : RStyle.getStyle(props.style);
+        const style = props.style
+            ? isOLFlatStyle(props.style)
+                ? props.style
+                : RStyle.getStyle(props.style)
+            : undefined;
         this.ol = new LayerVectorImage({
             ...props,
             style: style,
@@ -47,7 +51,7 @@ export default class RLayerVectorImage extends RLayerBaseVector<
 
     protected refresh(prevProps?: RLayerBaseVectorProps<Feature>): void {
         super.refresh(prevProps);
-        if (prevProps?.url !== this.props.url) {
+        if (prevProps?.url !== this.props.url && this.props.url !== undefined) {
             this.source.setUrl(this.props.url);
             this.source.refresh();
         }

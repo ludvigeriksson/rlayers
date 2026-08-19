@@ -30,19 +30,20 @@ export interface RLayerWMTSProps extends RLayerRasterProps {
  * Requires an `RMap` context
  */
 export default class RLayerWMTS extends RLayerRaster<RLayerWMTSProps> {
-    ol: LayerTile<SourceWMTS>;
-    source: SourceWMTS;
-    loading: Promise<SourceWMTS> | null;
+    declare ol: LayerTile<SourceWMTS>;
+    declare source: SourceWMTS | null;
+    declare loading: Promise<SourceWMTS | null> | null;
     parser: WMTSCapabilities;
-    options: Options;
+    declare options: Options | null;
 
     constructor(props: Readonly<RLayerWMTSProps>) {
         super(props);
-        this.ol = new LayerTile({source: this.source, className: props.className});
+        this.ol = new LayerTile({className: props.className});
         this.parser = new WMTSCapabilities();
+        this.loading = this.createSource();
     }
 
-    protected createSource(): Promise<SourceWMTS> {
+    protected createSource(): Promise<SourceWMTS | null> {
         debug('createSource', this);
         return fetch(this.props.url)
             .then((r) => r.text())
@@ -53,6 +54,9 @@ export default class RLayerWMTS extends RLayerRaster<RLayerWMTSProps> {
                     projection: this.props.projection,
                     matrixSet: this.props.matrixSet
                 });
+                if (!this.options) {
+                    throw new Error('Failed to create WMTS options');
+                }
                 if (this.props.attributions) this.options.attributions = this.props.attributions;
                 this.options.crossOrigin = '';
                 if (this.props.projection) this.options.projection = this.props.projection;
@@ -67,7 +71,6 @@ export default class RLayerWMTS extends RLayerRaster<RLayerWMTSProps> {
             .catch((e) => {
                 // eslint-disable-next-line no-console
                 console.error('failed loading WMTS', this.props.url, this.props.layer, e);
-                this.source = undefined;
                 return null;
             });
     }
@@ -81,11 +84,14 @@ export default class RLayerWMTS extends RLayerRaster<RLayerWMTSProps> {
             prevProps?.matrixSet !== this.props.matrixSet
         ) {
             this.createSource().then(() => {
-                this.ol.setSource(this.source);
-                this.attachOldEventHandlers(this.source);
+                if (this.source) {
+                    this.ol.setSource(this.source);
+                    this.attachOldEventHandlers(this.source);
+                }
             });
         } else {
-            if (this.props.onCapabilities) this.props.onCapabilities.call(this, this.options);
+            if (this.props.onCapabilities && this.options)
+                this.props.onCapabilities.call(this, this.options);
         }
     }
 }

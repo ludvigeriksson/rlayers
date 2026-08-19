@@ -25,6 +25,6 @@ export interface RLayerRasterProps extends RLayerProps {
 /** The common base of all tiled (even if not raster) layers, not meant to be used directly */
 export default class RLayerRaster<P extends RLayerRasterProps> extends RLayer<P> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ol: Layer<Source, LayerRenderer<any>>;
-    source: Source;
+    declare ol: Layer<Source, LayerRenderer<any>>;
+    declare source: Source | null;
 }

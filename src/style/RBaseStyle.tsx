@@ -18,13 +18,12 @@ export default class RBaseStyle<P extends RBaseStyleProps> extends React.PureCom
 > {
     static contextType = RContext;
     protected static classProps: string[] = [];
-    classProps: string[];
-    ol: unknown;
-    context: RContextType;
+    classProps!: string[];
+    ol: unknown = null;
+    declare context: RContextType;
 
     constructor(props: Readonly<P>) {
         super(props);
-        this.ol = null;
     }
 
     /* istanbul ignore next */
@@ -38,8 +37,9 @@ export default class RBaseStyle<P extends RBaseStyleProps> extends React.PureCom
         for (const p of this.classProps) {
             const m = p.charAt(0).toUpperCase() + p.substring(1);
             if ((prevProps && prevProps[p]) !== this.props[p]) {
-                if (this.ol['set' + m]) {
-                    this.ol['set' + m](this.props[p]);
+                const ol = this.ol as Record<string, unknown>;
+                if (typeof ol['set' + m] === 'function') {
+                    (ol['set' + m] as (v: unknown) => void)(this.props[p]);
                 } else {
                     // eslint-disable-next-line no-console
                     console.error(
@@ -71,10 +71,10 @@ export default class RBaseStyle<P extends RBaseStyleProps> extends React.PureCom
     }
 
     componentWillUnmount(): void {
-        this.set(null);
+        this.set(null as unknown as undefined);
     }
 
-    render(): JSX.Element {
+    render(): React.ReactNode {
         if (!this.context) throw new Error('A style property must be part of a style');
         if (this.ol === null) {
             this.ol = this.create(this.props);

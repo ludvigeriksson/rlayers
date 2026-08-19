@@ -19,6 +19,7 @@
         "resolveJsonModule": true,
         "moduleResolution": "node",
         "downlevelIteration": true,
+        "skipLibCheck": true,
         "paths": {
             "rlayers": ["../src"],
             "rlayers/*": ["../src/*"]

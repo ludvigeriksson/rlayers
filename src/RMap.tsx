@@ -161,7 +161,7 @@ export interface RMapProps extends PropsWithChildren<unknown> {
  */
 export default class RMap extends RlayersBase<RMapProps, Record<string, never>> {
     ol: Map;
-    private target: React.RefObject<HTMLDivElement>;
+    private target: React.RefObject<HTMLDivElement | null>;
 
     constructor(props: Readonly<RMapProps>) {
         super(props);

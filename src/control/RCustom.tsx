@@ -12,8 +12,8 @@ import {default as RControlBase, RControlOptions, RControlProps} from './RContro
  * [See this for an example](https://mmomtchev.github.io/rlayers/#/controls)
  */
 export default class RCustom extends RControlBase<RControlProps, Record<string, never>> {
-    ol: Control;
-    targetRef: React.RefObject<HTMLDivElement>;
+    ol!: Control;
+    targetRef: React.RefObject<HTMLDivElement | null>;
 
     constructor(props: Readonly<RControlProps>) {
         super(props);
@@ -28,7 +28,7 @@ export default class RCustom extends RControlBase<RControlProps, Record<string, 
     toOLProps(props: RControlProps): RControlOptions {
         return {
             ...super.toOLProps(props),
-            element: this.targetRef?.current
+            element: this.targetRef.current ?? undefined
         };
     }
 

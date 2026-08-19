@@ -128,7 +128,7 @@ describe('<RLayerVector>', () => {
         );
         if (!ref.current) throw new Error('failed rendering');
         ref.current.source.loadFeatures(
-            ref.current.source.getExtent(),
+            ref.current.source.getExtent()!,
             1000,
             ref.current.source.getProjection()!
         );

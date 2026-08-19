@@ -20,7 +20,7 @@ export interface RFillProps extends RBaseStyleProps {
  */
 export default class RFill extends RBaseStyle<RFillProps> {
     protected static classProps = ['color'];
-    ol: Fill;
+    declare ol: Fill;
 
     protected create(props: RFillProps): Fill {
         this.classProps = RFill.classProps;
@@ -28,7 +28,7 @@ export default class RFill extends RBaseStyle<RFillProps> {
     }
 
     protected set(ol: Fill): void {
-        if (this.context.style.setFill) return this.context.style.setFill(ol);
+        if (this.context.style?.setFill) return this.context.style.setFill(ol);
         /* istanbul ignore next */
         throw new Error('Parent element does not support a fill');
     }

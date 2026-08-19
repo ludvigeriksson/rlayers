@@ -49,7 +49,7 @@ export default class RModify extends RPointer<RModifyProps> {
         'pixelTolerance',
         'hitDetection'
     ];
-    ol: Modify;
+    declare ol: Modify;
 
     createOL(props: RModifyProps): Modify {
         if (!this?.context?.vectorsource)

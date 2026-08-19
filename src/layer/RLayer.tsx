@@ -49,8 +49,8 @@ export interface RLayerProps extends PropsWithChildren<unknown> {
  */
 export default class RLayer<P extends RLayerProps> extends RlayersBase<P, Record<string, never>> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ol: Layer<Source, LayerRenderer<any>>;
-    source: Source;
+    ol!: Layer<Source, LayerRenderer<any>>;
+    source!: Source | null;
     static contextType: React.Context<RContextType>;
 
     constructor(props: Readonly<P>) {
@@ -83,12 +83,12 @@ export default class RLayer<P extends RLayerProps> extends RlayersBase<P, Record
 
     componentDidMount(): void {
         super.componentDidMount();
-        this.context.map.addLayer(this.ol);
+        this.context.map!.addLayer(this.ol);
     }
 
     componentWillUnmount(): void {
         super.componentWillUnmount();
-        this.context.map.removeLayer(this.ol);
+        this.context.map!.removeLayer(this.ol);
     }
 
     render(): JSX.Element {
@@ -102,7 +102,7 @@ export default class RLayer<P extends RLayerProps> extends RlayersBase<P, Record
                             layer: this.ol,
                             source: this.source,
                             rLayer: this
-                        } as RContextType
+                        } as unknown as RContextType
                     }
                 >
                     {this.props.children}

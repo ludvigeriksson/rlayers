@@ -136,7 +136,7 @@ export default class RLayerBaseVector<
     F extends FeatureLike,
     P extends RLayerBaseVectorProps<F>
 > extends RLayer<P> {
-    ol: BaseVector<
+    declare ol: BaseVector<
         F,
         SourceVector<F>,
         | CanvasVectorLayerRenderer
@@ -144,7 +144,7 @@ export default class RLayerBaseVector<
         | CanvasVectorImageLayerRenderer
         | WebGLVectorLayerRenderer
     >;
-    source: SourceVector<F>;
+    declare source: SourceVector<F>;
 
     constructor(props: Readonly<P>) {
         super(props);
@@ -158,9 +158,12 @@ export default class RLayerBaseVector<
 
     protected refresh(prevProps?: P): void {
         super.refresh(prevProps);
-        if (prevProps?.style !== this.props.style) {
+        if (prevProps?.style !== this.props.style && this.props.style) {
             if (isOLFlatStyle(this.props.style)) this.ol.setStyle(this.props.style);
-            else this.ol.setStyle(RStyle.getStyle(this.props.style));
+            else {
+                const style = RStyle.getStyle(this.props.style);
+                if (style) this.ol.setStyle(style);
+            }
         }
     }
 
@@ -181,7 +184,7 @@ export default class RLayerBaseVector<
 
     render(): JSX.Element {
         super.render();
-        RFeature.initEventRelay(this.context.map);
+        RFeature.initEventRelay(this.context.map!);
         return (
             <div className='_rlayers_RLayerVector'>
                 <RContext.Provider
@@ -194,7 +197,7 @@ export default class RLayerBaseVector<
                             vectorsource: this.source,
                             rLayer: this,
                             rLayerVector: this
-                        } as RContextType
+                        } as unknown as RContextType
                     }
                 >
                     {this.props.children}

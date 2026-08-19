@@ -1,6 +1,7 @@
 import React from 'react';
 import {Feature} from 'ol';
 import {Heatmap as LayerHeatmap} from 'ol/layer';
+import type {WeightExpression} from 'ol/layer/Heatmap';
 import {Vector as SourceVector} from 'ol/source';
 import BaseObject from 'ol/Object';
 import {Geometry, Point} from 'ol/geom';
@@ -16,7 +17,7 @@ export interface RLayerHeatmapProps extends RLayerBaseVectorProps<Feature<Point>
     /** Radius */
     radius?: number;
     /** Weight function for each RFeature, weight goes from 0 to 1 */
-    weight?: (f: Feature<Point>) => number;
+    weight?: WeightExpression;
     /**
      * OpenLayers features that will be loaded
      *
@@ -36,8 +37,8 @@ export interface RLayerHeatmapProps extends RLayerBaseVectorProps<Feature<Point>
  * Provides a vector layer for JSX-declared RFeatures
  */
 export default class RLayerHeatmap extends RLayerBaseVector<Feature<Point>, RLayerHeatmapProps> {
-    ol: LayerHeatmap<Feature<Point>>;
-    source: SourceVector<Feature<Point>>;
+    declare ol: LayerHeatmap<Feature<Point>>;
+    declare source: SourceVector<Feature<Point>>;
 
     protected createSource(props: Readonly<RLayerHeatmapProps>): BaseObject[] {
         this.source = new SourceVector({
@@ -49,13 +50,21 @@ export default class RLayerHeatmap extends RLayerBaseVector<Feature<Point>, RLay
             strategy: this.props.strategy,
             attributions: this.props.attributions
         });
-        this.ol = new LayerHeatmap<Feature<Point>>({...props, source: this.source});
+        this.ol = new LayerHeatmap<Feature<Point>, SourceVector<Feature<Point>>>({
+            source: this.source,
+            blur: props.blur,
+            radius: props.radius,
+            weight: props.weight,
+            className: props.className
+        });
         return [this.ol, this.source];
     }
 
     protected refresh(prev?: RLayerHeatmapProps): void {
         super.refresh(prev);
-        if (prev?.blur !== this.props.blur) this.ol.setBlur(this.props.blur);
-        if (prev?.radius !== this.props.radius) this.ol.setRadius(this.props.radius);
+        if (prev?.blur !== this.props.blur && this.props.blur !== undefined)
+            this.ol.setBlur(this.props.blur);
+        if (prev?.radius !== this.props.radius && this.props.radius !== undefined)
+            this.ol.setRadius(this.props.radius);
     }
 }

@@ -33,18 +33,19 @@ export interface RGeolocationProps {
  * Must have an `RMap` parent
  */
 export default class RGeolocation extends RlayersBase<RGeolocationProps, Record<string, never>> {
-    ol: Geolocation;
+    ol!: Geolocation;
+    private olReady = false;
 
     constructor(props: Readonly<RGeolocationProps>) {
         super(props);
-        this.ol = null;
     }
 
-    render(): React.JSX.Element {
+    render(): React.ReactNode {
         if (!this?.context?.map) throw new Error('A Geolocation must be part of a map');
-        if (this.ol === null) {
+        if (!this.olReady) {
             const projection = this.props.projection ?? this.context.map.getView().getProjection();
             this.ol = new Geolocation({...this.props, projection});
+            this.olReady = true;
         }
         return super.render();
     }

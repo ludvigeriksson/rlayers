@@ -88,8 +88,8 @@ export interface RLayerVectorTileProps<F extends FeatureLike = RenderFeature> ex
 export default class RLayerVectorTile<F extends FeatureLike = RenderFeature> extends RLayer<
     RLayerVectorTileProps<F>
 > {
-    ol: LayerVectorTile<SourceVectorTile<F>, F>;
-    source: SourceVectorTile<F>;
+    declare ol: LayerVectorTile<SourceVectorTile<F>, F>;
+    declare source: SourceVectorTile<F>;
     static contextType: React.Context<RContextType>;
 
     constructor(props: Readonly<RLayerVectorTileProps<F>>) {
@@ -151,7 +151,7 @@ export default class RLayerVectorTile<F extends FeatureLike = RenderFeature> ext
 
     render(): JSX.Element {
         super.render();
-        RFeature.initEventRelay(this.context.map);
+        RFeature.initEventRelay(this.context.map!);
         return (
             <div className='_rlayers_RLayerVectorTile'>
                 <RContext.Provider
@@ -162,7 +162,7 @@ export default class RLayerVectorTile<F extends FeatureLike = RenderFeature> ext
                             vectortilelayer: this.ol,
                             rLayer: this,
                             rLayerVectorTile: this
-                        } as RContextType
+                        } as unknown as RContextType
                     }
                 >
                     {this.props.children}

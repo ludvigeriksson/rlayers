@@ -6,13 +6,13 @@ import debug from './debug';
 export const handlersSymbol = '_rlayers_handlers';
 export type OLEvent = 'change';
 export type Handler = (e: unknown) => boolean | void;
-export type Handlers = Record<OLEvent, Handler>;
+export type Handlers = Partial<Record<OLEvent, Handler>>;
 
 export class RlayersBase<P, S> extends React.PureComponent<P, S> {
     static contextType = RContext;
-    context: RContextType;
-    ol: BaseObject;
-    eventSources: BaseObject[];
+    declare context: RContextType;
+    ol!: BaseObject;
+    eventSources?: BaseObject[];
 
     protected static getOLObject<T>(prop: string, ol: BaseObject) {
         let handlers = ol.get(prop);
@@ -138,8 +138,8 @@ export class RlayersBase<P, S> extends React.PureComponent<P, S> {
             return false;
         }
         for (const k of Object.keys(this.props))
-            if (this.props[k] !== prev[k]) {
-                debug('because of', k, this.props[k], prev[k]);
+            if (this.props[k] !== prev?.[k]) {
+                debug('because of', k, this.props[k], prev?.[k]);
                 return true;
             }
         return false;
@@ -166,7 +166,7 @@ export class RlayersBase<P, S> extends React.PureComponent<P, S> {
         }
     }
 
-    render(): JSX.Element {
+    render(): React.ReactNode {
         return null;
     }
 }

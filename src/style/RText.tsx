@@ -61,7 +61,7 @@ export default class RText extends RBaseStyle<RTextProps> {
         'placement',
         'textBaseline'
     ];
-    ol: Text;
+    declare ol: Text;
 
     protected create(props: RTextProps): Text {
         this.classProps = RText.classProps;
@@ -69,7 +69,7 @@ export default class RText extends RBaseStyle<RTextProps> {
     }
 
     protected set(ol: Text): void {
-        if (!this.context.style.setText)
+        if (!this.context.style?.setText)
             /* istanbul ignore next */
             throw new Error('Parent element does not support a text');
         this.context.style.setText(ol);

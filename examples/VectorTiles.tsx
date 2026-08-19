@@ -11,7 +11,7 @@ import {MVT} from 'ol/format';
 import 'ol/ol.css';
 
 import {RMap, RLayerVectorTile} from 'rlayers';
-import {useRStyle, RStyle, RStyleArray, RStroke, RFill, RCircle, RText} from 'rlayers/style';
+import {RStyle, RStyleArray, RStroke, RFill, RCircle, RText} from 'rlayers/style';
 import {Geometry} from 'ol/geom';
 import RLayerStadia from 'rlayers/layer/RLayerStadia';
 import RenderFeature from 'ol/render/Feature';
@@ -33,7 +33,7 @@ const fonts = {
  */
 export default function VectorTiles(): JSX.Element {
     const [country, setCountry] = React.useState('');
-    const towns = useRStyle();
+    const towns = React.useRef<RStyleArray>(null);
     const parser = useMemo(() => new MVT(), []);
     return (
         <React.Fragment>

@@ -24,8 +24,8 @@ export interface RLayerTileJSONProps extends RLayerRasterProps {
  * Requires an `RMap` context
  */
 export default class RLayerTileJSON extends RLayerRaster<RLayerTileJSONProps> {
-    ol: LayerTile<TileJSON>;
-    source: TileJSON;
+    declare ol: LayerTile<TileJSON>;
+    declare source: TileJSON;
 
     constructor(props: Readonly<RLayerTileJSONProps>) {
         super(props);

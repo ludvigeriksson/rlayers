@@ -77,7 +77,7 @@ export default function GeoData(): JSX.Element {
                     {current ? (
                         <div>
                             <RFeature geometry={current.getGeometry()}>
-                                <ROverlay className='example-overlay' autoPosition={true}>
+                                <ROverlay className='example-overlay' autoPan={true}>
                                     Population in <strong>{current.get('nom')}</strong> in 2018 is{' '}
                                     <strong>{getData(data, current.get('code'))}</strong>
                                 </ROverlay>

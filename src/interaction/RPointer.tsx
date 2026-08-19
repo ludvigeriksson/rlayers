@@ -35,6 +35,6 @@ export default class RPointer<P> extends RBaseInteraction<P> {
         'handleMoveEvent',
         'handleUpEvent'
     ];
-    classProps: string[];
-    ol: Pointer;
+    declare classProps: string[];
+    declare ol: Pointer;
 }

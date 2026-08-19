@@ -11,7 +11,7 @@ export interface RMousePositionProps extends RControlProps {
     /**
      * Optional function to change coordinate formatting
      */
-    coordinateFormat?: (coordinate: Coordinate) => string;
+    coordinateFormat?: (coordinate: Coordinate | undefined) => string;
     /**
      * View projection
      * @default Map View's projection

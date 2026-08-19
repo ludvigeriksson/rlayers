@@ -22,8 +22,8 @@ export interface RLayerWMSProps extends RLayerRasterProps {
  * A layer that renders WMS maps as a single image
  */
 export default class RLayerWMS extends RLayerRaster<RLayerWMSProps> {
-    ol: ImageLayer<ImageWMS>;
-    source: ImageWMS;
+    declare ol: ImageLayer<ImageWMS>;
+    declare source: ImageWMS;
 
     constructor(props: Readonly<RLayerWMSProps>) {
         super(props);

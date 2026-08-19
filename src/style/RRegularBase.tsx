@@ -16,9 +16,9 @@ export interface RRegularBaseProps extends RImageProps {
 /** Abstract class */
 export default class RRegularBase<P extends RRegularBaseProps> extends RImage<P> {
     protected static classProps = RImage.classProps.concat(['radius']);
-    ol: Image;
-    stroke: Stroke;
-    fill: Fill;
+    declare ol: Image;
+    stroke!: Stroke;
+    fill!: Fill;
 
     /* istanbul ignore next */
     protected create(props: P): Image {

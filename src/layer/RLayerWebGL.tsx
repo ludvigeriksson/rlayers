@@ -28,6 +28,6 @@ export default class RLayerWebGL<
     P extends RLayerWebGLProps,
     S extends Tile
 > extends RLayerRaster<P> {
-    ol: LayerTileWebGL;
-    source: SourceDataTile<S>;
+    declare ol: LayerTileWebGL;
+    declare source: SourceDataTile<S>;
 }

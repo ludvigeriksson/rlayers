@@ -45,8 +45,8 @@ import {Geometry} from 'ol/geom';
 export default class RLayerVector<
     F extends FeatureLike = Feature<Geometry>
 > extends RLayerBaseVector<F, RLayerBaseVectorProps<F>> {
-    ol: LayerVector<SourceVector<F>, F>;
-    source: SourceVector<F>;
+    declare ol: LayerVector<SourceVector<F>, F>;
+    declare source: SourceVector<F>;
 
     protected createSource(props: Readonly<RLayerBaseVectorProps<F>>): BaseObject[] {
         this.source = new SourceVector<F>({
@@ -58,7 +58,11 @@ export default class RLayerVector<
             strategy: this.props.strategy,
             attributions: this.props.attributions
         });
-        const style = isOLFlatStyle(props.style) ? props.style : RStyle.getStyle(props.style);
+        const style = props.style
+            ? isOLFlatStyle(props.style)
+                ? props.style
+                : RStyle.getStyle(props.style)
+            : undefined;
         this.ol = new LayerVector<SourceVector<F>, F>({
             ...props,
             style,
@@ -69,11 +73,11 @@ export default class RLayerVector<
 
     protected refresh(prevProps?: RLayerBaseVectorProps<F>): void {
         super.refresh(prevProps);
-        if (prevProps?.url !== this.props.url) {
+        if (prevProps?.url !== this.props.url && this.props.url !== undefined) {
             this.source.setUrl(this.props.url);
             this.source.refresh();
         }
-        if (prevProps?.features !== this.props.features) {
+        if (prevProps?.features !== this.props.features && this.props.features !== undefined) {
             this.source.clear();
             this.source.addFeatures(this.props.features);
         }

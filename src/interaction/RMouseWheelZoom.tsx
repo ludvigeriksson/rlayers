@@ -37,7 +37,7 @@ export default class RMouseWheelZoom extends RBaseInteraction<RMouseWheelZoomPro
         'useAnchor',
         'constrainResolution'
     ];
-    ol: MouseWheelZoom;
+    declare ol: MouseWheelZoom;
 
     createOL(props: RMouseWheelZoomProps): MouseWheelZoom {
         this.classProps = RMouseWheelZoom.classProps;

@@ -10,6 +10,7 @@ import {RMap, RLayerVector, RFeature} from 'rlayers';
 import {
     RStyle,
     RStyleArray,
+    RStyleLike,
     RRegularShape,
     RStroke,
     RFill,
@@ -17,6 +18,7 @@ import {
     RText,
     RIcon,
     createRStyle,
+    createRStyleArrayRef,
     RBackground
 } from 'rlayers/style';
 import {Point} from 'ol/geom';
@@ -66,10 +68,10 @@ describe('<RStyle>', () => {
                 </RRegularShape>
             </RStyle>
         );
-        expect(RStyle.getStyleStatic(ref).getStroke()?.getColor()).toBe('#007bff');
-        expect(RStyle.getStyleStatic(ref).getStroke()?.getWidth()).toBe(3);
-        expect(RStyle.getStyleStatic(ref).getFill()?.getColor()).toBe('#000001');
-        expect((RStyle.getStyleStatic(ref).getImage() as RegularShape).getFill()?.getColor()).toBe(
+        expect(RStyle.getStyleStatic(ref)!.getStroke()?.getColor()).toBe('#007bff');
+        expect(RStyle.getStyleStatic(ref)!.getStroke()?.getWidth()).toBe(3);
+        expect(RStyle.getStyleStatic(ref)!.getFill()?.getColor()).toBe('#000001');
+        expect((RStyle.getStyleStatic(ref)!.getImage() as RegularShape).getFill()?.getColor()).toBe(
             '#000003'
         );
     });
@@ -82,8 +84,8 @@ describe('<RStyle>', () => {
                 </RCircle>
             </RStyle>
         );
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getRadius()).toBe(5);
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getFill()?.getColor()).toBe(
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getRadius()).toBe(5);
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getFill()?.getColor()).toBe(
             '#000002'
         );
     });
@@ -96,8 +98,8 @@ describe('<RStyle>', () => {
                 </RCircle>
             </RStyle>
         );
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getRadius()).toBe(5);
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getFill()?.getColor()).toBe(
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getRadius()).toBe(5);
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getFill()?.getColor()).toBe(
             '#000002'
         );
     });
@@ -110,9 +112,9 @@ describe('<RStyle>', () => {
                 </RCircle>
             </RStyle>
         );
-        expect(RStyle.getStyleStatic(ref).getZIndex()).toBe(1);
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getRadius()).toBe(5);
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getFill()?.getColor()).toBe(
+        expect(RStyle.getStyleStatic(ref)!.getZIndex()).toBe(1);
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getRadius()).toBe(5);
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getFill()?.getColor()).toBe(
             '#000002'
         );
         rerender(
@@ -122,9 +124,9 @@ describe('<RStyle>', () => {
                 </RCircle>
             </RStyle>
         );
-        expect(RStyle.getStyleStatic(ref).getZIndex()).toBeUndefined();
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getRadius()).toBe(3);
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getFill()?.getColor()).toBe(
+        expect(RStyle.getStyleStatic(ref)!.getZIndex()).toBeUndefined();
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getRadius()).toBe(3);
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getFill()?.getColor()).toBe(
             '#000005'
         );
         rerender(
@@ -134,8 +136,8 @@ describe('<RStyle>', () => {
                 </RCircle>
             </RStyle>
         );
-        expect(RStyle.getStyleStatic(ref).getZIndex()).toBe(2);
-        expect((RStyle.getStyleStatic(ref).getImage() as Circle).getStroke()?.getWidth()).toBe(1);
+        expect(RStyle.getStyleStatic(ref)!.getZIndex()).toBe(2);
+        expect((RStyle.getStyleStatic(ref)!.getImage() as Circle).getStroke()?.getWidth()).toBe(1);
     });
     it('should support dynamic styles', async () => {
         const ref = createRStyle();
@@ -242,7 +244,7 @@ describe('<RStyle>', () => {
         });
         expect(style.getText()?.getText()).toBe('text14');
         expect(style.getText()?.getStroke()?.getWidth()).toBe(14);
-        expect(ref.current?.cache.get(f.get('name'))).toBe(style);
+        expect(ref.current!.cache!.get(f.get('name'))).toBe(style);
     });
     it('should apply to vector layers', async () => {
         const ref = React.createRef() as React.RefObject<RLayerVector>;
@@ -321,8 +323,10 @@ describe('RStyle.getStyle', () => {
         const obj = new Style({});
         expect(RStyle.getStyle(obj)).toBe(obj);
         expect(RStyle.getStyleStatic(obj)).toBe(obj);
-        expect(RStyle.getStyle([obj])[0]).toBe(obj);
-        expect(RStyle.getStyleStatic([obj])[0]).toBe(obj);
+        expect((RStyle.getStyle([obj]) as Style[])[0]).toBe(obj);
+        expect((RStyle.getStyleStatic([obj] as unknown as RStyleLike) as unknown as Style[])[0]).toBe(
+            obj
+        );
     });
     it('should throw on dynamic RStyle', async () => {
         // eslint-disable-next-line no-console
@@ -357,7 +361,7 @@ describe('RStyle.getStyle', () => {
 
 describe('<RStyleArray>', () => {
     it('should create a basic style array', async () => {
-        const ref = createRStyle();
+        const ref = createRStyleArrayRef();
         render(
             <RStyleArray ref={ref}>
                 <RStyle>
@@ -372,10 +376,10 @@ describe('<RStyleArray>', () => {
         const style = (RStyle.getStyle(ref) as () => Style[])();
         expect(style[0].getImage()).toBeInstanceOf(Image);
         expect(style[1].getStroke()?.getWidth()).toBe(3);
-        expect(RStyle.getStyleStatic(ref)[0]).toBe(style[0]);
+        expect(RStyle.getStyleStatic(ref)![0]).toBe(style[0]);
     });
     it('should update a style array', async () => {
-        const ref = createRStyle();
+        const ref = createRStyleArrayRef();
         const {rerender} = render(
             <RStyleArray ref={ref}>
                 <RStyle>
@@ -411,7 +415,7 @@ describe('<RStyleArray>', () => {
         expect(style[2].getStroke()?.getWidth()).toBe(3);
     });
     it('should create a dynamic style array', async () => {
-        const ref = createRStyle();
+        const ref = createRStyleArrayRef();
         const {rerender, unmount} = render(
             <RStyleArray
                 ref={ref}
@@ -474,7 +478,7 @@ describe('<RStyleArray>', () => {
         const err = console.error;
         // eslint-disable-next-line no-console
         console.error = () => undefined;
-        const ref = createRStyle();
+        const ref = createRStyleArrayRef();
         expect(() =>
             render(
                 <RStyleArray ref={ref}>
@@ -501,7 +505,7 @@ describe('<RStyleArray>', () => {
         const err = console.error;
         // eslint-disable-next-line no-console
         console.error = () => undefined;
-        const ref = createRStyle();
+        const ref = createRStyleArrayRef();
         render(
             <RStyleArray
                 ref={ref}

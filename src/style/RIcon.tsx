@@ -81,7 +81,7 @@ export default class RIcon extends RImage<RIconProps> {
         'imgSize',
         'src'
     ]);
-    ol: Icon;
+    declare ol: Icon;
 
     protected create(props: RIconProps): Icon {
         this.classProps = RIcon.classProps;

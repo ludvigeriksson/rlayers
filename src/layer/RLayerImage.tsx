@@ -28,8 +28,8 @@ export interface RLayerImageProps extends RLayerProps {
  * A layer that renders a static image
  */
 export default class RLayerImage extends RLayer<RLayerImageProps> {
-    ol: LayerImage<SourceImage>;
-    source: SourceImage;
+    declare ol: LayerImage<SourceImage>;
+    declare source: SourceImage;
 
     constructor(props: Readonly<RLayerImageProps>) {
         super(props);

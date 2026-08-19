@@ -67,7 +67,7 @@ export default class RDraw extends RPointer<RDrawProps> {
         'minPoints',
         'snapTolerance'
     ];
-    ol: Draw;
+    declare ol: Draw;
 
     createOL(props: RDrawProps): Draw {
         if (!this?.context?.vectorsource)
