@@ -10,7 +10,7 @@ import {default as RBaseInteraction} from './RBaseInteraction';
  */
 export interface RDragPanProps {
     /** An optional OpenLayers condition */
-    condition?: (e: MapBrowserEvent<UIEvent>) => boolean;
+    condition?: (e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>) => boolean;
     /** Kinetic parameters */
     kinetic?: Kinetic;
     /** Called on every change */

@@ -1,21 +1,22 @@
-import React from 'react';
+import React, {JSX} from 'react';
 import {LoadingStrategy, VectorSourceEvent} from 'ol/source/Vector';
 import RenderEvent from 'ol/render/Event';
 import BaseVector from 'ol/layer/BaseVector';
 import CanvasVectorLayerRenderer from 'ol/renderer/canvas/VectorLayer';
 import CanvasVectorTileLayerRenderer from 'ol/renderer/canvas/VectorTileLayer';
 import CanvasVectorImageLayerRenderer from 'ol/renderer/canvas/VectorImageLayer';
-import WebGLPointsLayerRenderer from 'ol/renderer/webgl/PointsLayer';
+import WebGLVectorLayerRenderer from 'ol/renderer/webgl/VectorLayer';
 import {Vector as SourceVector} from 'ol/source';
-import FeatureFormat, {FeatureToFeatureClass} from 'ol/format/Feature';
+import FeatureFormat from 'ol/format/Feature';
 import {FeatureLoader, FeatureUrlFunction} from 'ol/featureloader';
 import BaseObject from 'ol/Object';
-import {FeatureClass, FeatureLike} from 'ol/Feature';
+import {FeatureLike} from 'ol/Feature';
+import {FlatStyleLike} from 'ol/style/flat';
 
 import {RContext, RContextType} from '../context';
 import {default as RLayer, RLayerProps} from './RLayer';
 import {default as RFeature, RFeatureUIEvent} from '../RFeature';
-import {default as RStyle, RStyleLike} from '../style/RStyle';
+import {isOLFlatStyle, default as RStyle, RStyleLike} from '../style/RStyle';
 import {OLEvent, RlayersBase} from '../REvent';
 
 import debug from '../debug';
@@ -53,7 +54,7 @@ export interface RLayerBaseVectorProps<F extends FeatureLike> extends RLayerProp
     /** Use a custom loader instead of XHR */
     loader?: FeatureLoader<F>;
     /** OpenLayers default style for features without `style` */
-    style?: RStyleLike;
+    style?: RStyleLike | FlatStyleLike;
     /** OpenLayers option to specify LoadingStrategy default is `all` strategy */
     strategy?: LoadingStrategy;
     /**
@@ -141,13 +142,12 @@ export default class RLayerBaseVector<
         | CanvasVectorLayerRenderer
         | CanvasVectorTileLayerRenderer
         | CanvasVectorImageLayerRenderer
-        | WebGLPointsLayerRenderer
+        | WebGLVectorLayerRenderer
     >;
     source: SourceVector<F>;
 
-    constructor(props: Readonly<P>, context?: React.Context<RContextType>) {
-        super(props, context);
-        RFeature.initEventRelay(this.context.map);
+    constructor(props: Readonly<P>) {
+        super(props);
         this.eventSources = this.createSource(props);
         super.refresh();
     }
@@ -158,8 +158,10 @@ export default class RLayerBaseVector<
 
     protected refresh(prevProps?: P): void {
         super.refresh(prevProps);
-        if (prevProps?.style !== this.props.style)
-            this.ol.setStyle(RStyle.getStyle(this.props.style));
+        if (prevProps?.style !== this.props.style) {
+            if (isOLFlatStyle(this.props.style)) this.ol.setStyle(this.props.style);
+            else this.ol.setStyle(RStyle.getStyle(this.props.style));
+        }
     }
 
     incrementHandlers(ev: OLEvent): void {
@@ -178,6 +180,8 @@ export default class RLayerBaseVector<
     }
 
     render(): JSX.Element {
+        super.render();
+        RFeature.initEventRelay(this.context.map);
         return (
             <div className='_rlayers_RLayerVector'>
                 <RContext.Provider

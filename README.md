@@ -1,6 +1,6 @@
 # rlayers - React Components for OpenLayers 6+
 
-**Update: since Oct 24 I am homeless and living in my van. I lost access to most of my computer hardware. The eviction from my home has been timed for maximum effect as I was not present when it happened. I have only a single set of clothes and no means to get anything else. Please, if you use my software, consider asking everyone in the geospatial community if they are taking part in this extortion and why.**
+**Update: since Oct 24 2024 I am homeless and living in my van. I lost access to most of my computer hardware. The eviction from my home has been timed for maximum effect as I was not present when it happened. Please, if you use my software, consider asking everyone in the geospatial community if they are taking part in this extortion and why.**
 
 ![logo](https://raw.githubusercontent.com/mmomtchev/rlayers/master/rlayers-logo.svg)
 
@@ -47,28 +47,13 @@ It offers the full power _OpenLayers_ - dynamic reprojections, comprehensive eve
 npm --save install rlayers ol react react-dom
 ```
 
-### Compatibility Matrix
+### Compatibility
 
-_OpenLayers_ and _React_ are peer dependencies and should be installed separately.
+_React_ is a peer dependency and should be installed separately.
 
 _React_ is supported from version 16.8.0 with `rlayers@2.x` and from version 18 with `rlayers@3.x`.
 
----
-
-| rlayers          | Unit-tested _OpenLayers_ versions                                                                                                      | Unit-tested _React_ versions                        |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| 1.0 (_obsolete_) | 6.0                                                                                                                                    | 16.8, 16.14, 17.0.2                                 |
-| 1.1 (_obsolete_) | 6.6, 6.7, 6.8, 6.9                                                                                                                     | 16.8, 16.14, 17.0.2                                 |
-| 1.2 (_obsolete_) | 6.6, 6.7, 6.8, 6.9                                                                                                                     | 16.8, 16.14, 17.0.2                                 |
-| 1.3 (_obsolete_) | 6.10, 6.11, 6.12, 6.13, 6.14, 6.14.1                                                                                                   | 16.8, 16.14, 17.0.2, 18.0.0                         |
-| 1.4 (_obsolete_) | 6.10, 6.11, 6.12, 6.13, 6.14, 6.14.1, 6.15, 6.15.1, 7.0.0, 7.1.0, 7.2.0, 7.2.2, 7.3.0                                                  | 16.8, 16.14, 17.0.2, 18.0.0, 18.1.0, 18.2.0         |
-| 1.5 (_obsolete_) | 6.10, 6.11, 6.12, 6.13, 6.14, 6.14.1, 6.15, 6.15.1, 7.0.0, 7.1.0, 7.2.0, 7.2.2, 7.3.0, 7.4.0                                           | 16.8, 16.14, 17.0.2, 18.0.0, 18.1.0, 18.2.0         |
-| 2.0 (_obsolete_) | 6.10, 6.11, 6.12, 6.13, 6.14, 6.14.1, 6.15, 6.15.1, 7.0.0, 7.1.0, 7.2.0, 7.2.2, 7.3.0, 7.4.0, 7.5.1                                    | 16.8, 16.14, 17.0.2, 18.0.0, 18.1.0, 18.2.0         |
-| 2.1 (_obsolete_) | 6.10, 6.11, 6.12, 6.13, 6.14, 6.14.1, 6.15, 6.15.1, 7.0.0, 7.1.0, 7.2.0, 7.2.2, 7.3.0, 7.4.0, 7.5.1, 8.0.0, 8.1.0                      | 16.8, 16.14, 17.0.2, 18.0.0, 18.1.0, 18.2.0         |
-| 2.2 (_obsolete_) | 6.10, 6.11, 6.12, 6.13, 6.14, 6.14.1, 6.15, 6.15.1, 7.0.0, 7.1.0, 7.2.0, 7.2.2, 7.3.0, 7.4.0, 7.5.1, 8.0.0, 8.1.0, 8.2.0               | 16.8, 16.14, 17.0.2, 18.0.0, 18.1.0, 18.2.0         |
-| 2.3              | 6.10, 6.11, 6.12, 6.13, 6.14, 6.14.1, 6.15, 6.15.1, 7.0.0, 7.1.0, 7.2.0, 7.2.2, 7.3.0, 7.4.0, 7.5.1, 8.0.0, 8.1.0, 8.2.0, 9.0.0, 9.1.0 | 16.8, 16.14, 17.0.2, 18.0.0, 18.1.0, 18.2.0, 18.3.1 |
-| 3.0              | 9.2.2                                                                                                                                  | 18.0.0, 18.1.0, 18.2.0, 18.3.1                      |
-| 3.1 (`@latest`)  | 10.0.0                                                                                                                                 | 18.0.0, 18.1.0, 18.2.0, 18.3.1                      |
+Starting with version 3.0, `rlayers` always comes with a fixed OpenLayers version which is usually the latest one at the time of the release.
 
 ---
 

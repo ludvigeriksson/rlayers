@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.0] 2026-02-11
+
+-   OpenLayers 10.8.0
+-   [#631](https://github.com/mmomtchev/rlayers/pull/631), support custom projections and `matrixSet` for WMTS layers
+
+## [3.8.0] 2025-11-05
+
+-   OpenLayers 10.7.0
+-   Support OpenLayers flat styles for vector layers
+
+### [3.7.1] 2025-06-26
+
+-   OpenLayers 10.6.1
+
+## [3.7.0] 2025-06-17
+
+-   OpenLayers 10.6.0
+
+### [3.6.1] 2025-04-22
+
+-   Relax the requirements of `RLayerHeatmap` because in OpenLayers 10.5.0 `WebGLVectorPointsRenderer` does not overload `getRenderer()` with a more specific type
+
+## [3.6.0] 2025-04-02
+
+-   OpenLayers 10.5.0 support
+-   Add React 19.1 to the CI
+-   Fix [#399](https://github.com/mmomtchev/rlayers/issues/399), attributions are not displayed for layers other than OSM
+
+## [3.5.0] 2025-02-05
+
+-   OpenLayers 10.4.0 support
+
+## [3.4.0] 2025-02-02
+
+-   React 19 support
+
 ### [3.3.1] 2025-01-10
 
 -   Fix `RLayerVectorImage` in OpenLayers 10.3.1

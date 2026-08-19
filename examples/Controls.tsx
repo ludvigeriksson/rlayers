@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {JSX, useCallback} from 'react';
 import {MapBrowserEvent} from 'ol';
 import {fromLonLat, toLonLat} from 'ol/proj';
 import 'ol/ol.css';
@@ -20,11 +20,14 @@ export default function Controls(): JSX.Element {
                 initial={initial}
                 view={[view, setView]}
                 noDefaultControls={true}
-                onClick={useCallback((e: MapBrowserEvent<UIEvent>) => {
-                    const coords = e.map.getCoordinateFromPixel(e.pixel);
-                    const lonlat = toLonLat(coords);
-                    setLoc(lonlat);
-                }, [])}
+                onClick={useCallback(
+                    (e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>) => {
+                        const coords = e.map.getCoordinateFromPixel(e.pixel);
+                        const lonlat = toLonLat(coords);
+                        setLoc(lonlat);
+                    },
+                    []
+                )}
             >
                 <ROSM />
                 <RControl.RScaleLine />

@@ -1,13 +1,15 @@
-import React, {PropsWithChildren} from 'react';
+import React, {JSX, PropsWithChildren} from 'react';
 import {createRoot} from 'react-dom/client';
 import {LRUCache} from 'lru-cache';
 import {Map, Feature} from 'ol';
 import Style, {StyleLike} from 'ol/style/Style';
 import Geometry from 'ol/geom/Geometry';
+import {FlatStyleLike} from 'ol/style/flat';
 
 import {RContext, RContextType} from '../context';
 import debug from '../debug';
 import {flushSync} from 'react-dom';
+import RStyleArray from './RStyleArray';
 
 /**
  * @propsfor RStyle
@@ -32,8 +34,18 @@ export interface RStyleProps extends PropsWithChildren<unknown> {
 
 export type RStyleRef = React.RefObject<RStyle>;
 export type RStyleLike = RStyleRef | RStyle | StyleLike;
-export const useRStyle = (): RStyleRef => React.useRef();
+export const useRStyle = (): RStyleRef => React.useRef(undefined);
 export const createRStyle = (): RStyleRef => React.createRef();
+
+export function isOLFlatStyle(style: RStyleLike | FlatStyleLike): style is FlatStyleLike {
+    if (!style) return false;
+    if (Array.isArray(style)) return 'style' in style[0];
+    if (typeof style === 'function') return false;
+    if (style instanceof Style) return false;
+    if (style instanceof RStyle) return false;
+    if ('current' in style) return false;
+    return true;
+}
 
 /**
  * A style, all other style components must be descendants of `RStyle`
@@ -55,8 +67,8 @@ export default class RStyle extends React.PureComponent<RStyleProps, Record<stri
     childRefs: RStyleRef[];
     cache: LRUCache<string, Style>;
 
-    constructor(props: Readonly<RStyleProps>, context?: React.Context<RContextType>) {
-        super(props, context);
+    constructor(props: Readonly<RStyleProps>) {
+        super(props);
         if (props.render) this.ol = this.style;
         else this.ol = new Style({zIndex: props.zIndex});
         if (props.render && props.cacheSize && props.cacheId)

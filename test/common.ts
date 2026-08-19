@@ -11,7 +11,7 @@ import {Source} from 'ol/source';
 import LayerRenderer from 'ol/renderer/Layer';
 
 import {MapBrowserEvent, RContextType, RlayersBase, useOL, useRLayersComponent} from 'rlayers';
-import React from 'react';
+import React, {JSX} from 'react';
 
 export const mapProps = {
     initial: {center: fromLonLat([2.364, 48.82]), zoom: 11},
@@ -24,9 +24,14 @@ export function createEvent(
     map: Map,
     coords?: Pixel,
     dragging?: boolean
-): MapBrowserEvent<UIEvent> {
+): MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent> {
     const event = {clientX: coords?.[0] ?? 10, clientY: coords?.[1] ?? 10} as unknown;
-    return new MapBrowserEvent<UIEvent>(evname.toLowerCase(), map, event as UIEvent, dragging);
+    return new MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>(
+        evname.toLowerCase(),
+        map,
+        event as PointerEvent | KeyboardEvent | WheelEvent,
+        dragging
+    );
 }
 
 export const _coords: Record<string, Coordinate> = {

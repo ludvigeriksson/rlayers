@@ -1,9 +1,10 @@
-import React, {PropsWithChildren} from 'react';
+import React, {JSX, PropsWithChildren} from 'react';
 import {Layer} from 'ol/layer';
 import {Source} from 'ol/source';
 import LayerRenderer from 'ol/renderer/Layer';
 import BaseEvent from 'ol/events/Event';
 import {ProjectionLike} from 'ol/proj';
+import {AttributionLike} from 'ol/source/Source';
 
 import {RContext, RContextType} from '../context';
 import {RlayersBase} from '../REvent';
@@ -30,7 +31,7 @@ export interface RLayerProps extends PropsWithChildren<unknown> {
     /** Maximum zoom level which the layer is not rendered */
     maxZoom?: number;
     /** Custom attributions string */
-    attributions?: string;
+    attributions?: AttributionLike;
     /** Initial tile cache size */
     cacheSize?: number | undefined;
     /** Wrap features around the antimeridian */
@@ -50,10 +51,10 @@ export default class RLayer<P extends RLayerProps> extends RlayersBase<P, Record
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ol: Layer<Source, LayerRenderer<any>>;
     source: Source;
+    static contextType: React.Context<RContextType>;
 
-    constructor(props: Readonly<P>, context?: React.Context<RContextType>) {
-        super(props, context);
-        if (!this.context?.map?.addLayer) throw new Error('A layer must be part of a map');
+    constructor(props: Readonly<P>) {
+        super(props);
     }
 
     protected refresh(prevProps?: P): void {
@@ -68,10 +69,15 @@ export default class RLayer<P extends RLayerProps> extends RlayersBase<P, Record
             'maxZoom'
         ]) {
             const m = p.charAt(0).toUpperCase() + p.substring(1);
-            if (this.props[p] !== (prevProps && prevProps[p])) this.ol['set' + m](this.props[p]);
+            if (this.props?.[p] !== prevProps?.[p]) {
+                debug('Setting', this, m, this.props[p]);
+                this.ol['set' + m](this.props[p]);
+            }
         }
-        if (this.source && this.props.attributions)
+        if (this.source && this.props.attributions !== prevProps?.attributions) {
+            debug('Setting attributions', this);
             this.source.setAttributions(this.props.attributions);
+        }
         if (this.props.properties) this.ol.setProperties(this.props.properties);
     }
 
@@ -86,6 +92,7 @@ export default class RLayer<P extends RLayerProps> extends RlayersBase<P, Record
     }
 
     render(): JSX.Element {
+        if (!this.context?.map?.addLayer) throw new Error('A layer must be part of a map');
         return (
             <div className='_rlayers_RLayer'>
                 <RContext.Provider

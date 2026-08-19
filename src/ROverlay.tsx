@@ -1,4 +1,4 @@
-import React, {MouseEvent, PropsWithChildren} from 'react';
+import React, {JSX, MouseEvent, PropsWithChildren} from 'react';
 import {Overlay} from 'ol';
 import {type Coordinate} from 'ol/coordinate';
 import {type PanIntoViewOptions} from 'ol/Overlay';

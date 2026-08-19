@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
     push:
-        branches: ['*']
+        branches: [main]
     pull_request:
         branches: [main]
     workflow_dispatch:
@@ -19,9 +19,9 @@ jobs:
 
         steps:
             - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - run: npm i
@@ -34,15 +34,17 @@ jobs:
 
         steps:
             - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - run: |
-                  npm i react@18 react-dom@18 react-test-renderer@18 @types/react@18 @types/react-dom@18 @testing-library/react@13
+                  npm i react@18 react-dom@18 react-test-renderer@18 \
+                    @types/react@18 @types/react-dom@18 @testing-library/react@13 \
+                    react-router@7.0.2 react-router-dom@7.0.2
             - run: npm i
-            - run: tsc
+            - run: npx tsc
             - run: npm test
             - run: npm run build:examples
 
@@ -51,15 +53,17 @@ jobs:
 
         steps:
             - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - run: |
-                  npm i react@18.1 react-dom@18.1 react-test-renderer@18.1 @types/react@18 @types/react-dom@18 @testing-library/react@13
+                  npm i react@18.1 react-dom@18.1 react-test-renderer@18.1 \
+                    @types/react@18 @types/react-dom@18 @testing-library/react@13 \
+                    react-router@7.0.2 react-router-dom@7.0.2
             - run: npm i
-            - run: tsc
+            - run: npx tsc
             - run: npm test
             - run: npm run build:examples
 
@@ -68,15 +72,17 @@ jobs:
 
         steps:
             - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - run: |
-                  npm i react@18.2 react-dom@18.2 react-test-renderer@18.2 @types/react@18 @types/react-dom@18 @testing-library/react@13
+                  npm i react@18.2 react-dom@18.2 react-test-renderer@18.2 \
+                    @types/react@18 @types/react-dom@18 @testing-library/react@13 \
+                    react-router@7.0.2 react-router-dom@7.0.2
             - run: npm i
-            - run: tsc
+            - run: npx tsc
             - run: npm test
             - run: npm run build:examples
 
@@ -85,15 +91,93 @@ jobs:
 
         steps:
             - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - run: |
-                  npm i react@18.3.1 react-dom@18.3.1 react-test-renderer@18.3.1 @types/react@18.3.2 @types/react-dom@18.0.5 @testing-library/react@15.0.7
+                  npm i react@18.3.1 react-dom@18.3.1 react-test-renderer@18.3.1 \
+                    @types/react@18.3.2 @types/react-dom@18.0.5 @testing-library/react@15.0.7 \
+                    react-router@7.0.2 react-router-dom@7.0.2
             - run: npm i
-            - run: tsc
+            - run: npx tsc
+            - run: npm test
+            - run: npm run build:examples
+
+    react-19:
+        runs-on: ubuntu-latest
+
+        steps:
+            - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
+            - uses: actions/checkout@v6
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20.x
+            - run: |
+                  npm i react@19.0.0 react-dom@19.0.0 react-test-renderer@19.0.0 \
+                    @types/react@19.0.0 @types/react-dom@19.0.0 @testing-library/react@16.2.0 \
+                    react-router@7.1.5 react-router-dom@7.1.5
+            - run: npm i
+            - run: npx tsc
+            - run: npm test
+            - run: npm run build:examples
+
+    react-19-1:
+        runs-on: ubuntu-latest
+
+        steps:
+            - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
+            - uses: actions/checkout@v6
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20.x
+            - run: |
+                  npm i react@19.1.0 react-dom@19.1.0 react-test-renderer@19.1.0 \
+                    @types/react@19.0.12 @types/react-dom@19.0.4 @testing-library/react@16.2.0 \
+                    react-router@7.7.0 react-router-dom@7.7.0
+            - run: npm i
+            - run: npx tsc
+            - run: npm test
+            - run: npm run build:examples
+
+    react-19-1-1:
+        runs-on: ubuntu-latest
+
+        steps:
+            - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
+            - uses: actions/checkout@v6
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20.x
+            - run: |
+                  npm i react@19.1.1 react-dom@19.1.1 react-test-renderer@19.1.1 \
+                    @types/react@19.0.12 @types/react-dom@19.0.4 @testing-library/react@16.2.0 \
+                    react-router@7.7.0 react-router-dom@7.7.0
+            - run: npm i
+            - run: npx tsc
+            - run: npm test
+            - run: npm run build:examples
+
+    react-19-2-3:
+        runs-on: ubuntu-latest
+
+        steps:
+            - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
+            - uses: actions/checkout@v6
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20.x
+            - run: |
+                  npm i react@19.2.3 react-dom@19.2.3 react-test-renderer@19.2.3 \
+                    @types/react@19.2.7 @types/react-dom@19.2.3 @testing-library/react@16.3.0 \
+                    react-router@7.10.1 react-router-dom@7.10.1
+            - run: npm i
+            - run: npx tsc
             - run: npm test
             - run: npm run build:examples
 
@@ -102,15 +186,13 @@ jobs:
 
         steps:
             - run: echo "::add-mask::${{ secrets.STADIA_MAPS_API_KEY }}"
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - run: npm i
             - run: npm run test
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-            - run: npm run codecov
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+            - uses: codecov/codecov-action@v6
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}

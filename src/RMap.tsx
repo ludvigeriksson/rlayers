@@ -1,7 +1,7 @@
-import React, {PropsWithChildren} from 'react';
-import BaseEvent from 'ol/events/Event';
-import RenderEvent from 'ol/render/Event';
+import React, {JSX, PropsWithChildren} from 'react';
 import {Map, View, MapBrowserEvent, MapEvent} from 'ol';
+import RenderEvent from 'ol/render/Event';
+import BaseEvent from 'ol/events/Event';
 import {Coordinate} from 'ol/coordinate';
 import {Extent} from 'ol/extent';
 import {Interaction} from 'ol/interaction';
@@ -9,6 +9,7 @@ import {ProjectionLike} from 'ol/proj';
 
 import {RContext} from './context';
 import {RlayersBase} from './REvent';
+import debug from './debug';
 
 /** Center and zoom level */
 export type RView = {
@@ -56,20 +57,41 @@ export interface RMapProps extends PropsWithChildren<unknown> {
      */
     projection?: ProjectionLike;
     /** Called immediately on click */
-    onClick?: (this: RMap, e: MapBrowserEvent<UIEvent>) => boolean | void;
+    onClick?: (
+        this: RMap,
+        e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>
+    ) => boolean | void;
     /** Called on single click when the double click timer has expired */
-    onSingleClick?: (this: RMap, e: MapBrowserEvent<UIEvent>) => boolean | void;
+    onSingleClick?: (
+        this: RMap,
+        e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>
+    ) => boolean | void;
     /** Called on double click */
-    onDblClick?: (this: RMap, e: MapBrowserEvent<UIEvent>) => boolean | void;
+    onDblClick?: (
+        this: RMap,
+        e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>
+    ) => boolean | void;
     /** Called when the user starts panning the map */
-    onMoveStart?: (this: RMap, e: MapBrowserEvent<UIEvent>) => boolean | void;
+    onMoveStart?: (
+        this: RMap,
+        e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>
+    ) => boolean | void;
     /** Called when the user stops panning the map */
-    onMoveEnd?: (this: RMap, e: MapBrowserEvent<UIEvent>) => boolean | void;
+    onMoveEnd?: (
+        this: RMap,
+        e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>
+    ) => boolean | void;
     /** Called on every pointer move when dragging, `e.preventDefault()`
      * can be used to stop OpenLayers from also panning the map */
-    onPointerDrag?: (this: RMap, e: MapBrowserEvent<UIEvent>) => boolean | void;
+    onPointerDrag?: (
+        this: RMap,
+        e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>
+    ) => boolean | void;
     /** Called on every pointer movement, use with care */
-    onPointerMove?: (this: RMap, e: MapBrowserEvent<UIEvent>) => boolean | void;
+    onPointerMove?: (
+        this: RMap,
+        e: MapBrowserEvent<PointerEvent | KeyboardEvent | WheelEvent>
+    ) => boolean | void;
     /** Called after a layer has been rendered */
     onPostRender?: (this: RMap, e: MapEvent) => boolean | void;
     /** Called before layers are composed */
@@ -80,6 +102,12 @@ export interface RMapProps extends PropsWithChildren<unknown> {
     onRenderComplete?: (this: RMap, e: RenderEvent) => boolean | void;
     /** Called on every change */
     onChange?: (this: RMap, e: BaseEvent) => void;
+    /** Called when the map starts loading */
+    onLoadStart?: (this: RMap, e: MapEvent) => void;
+    /** Called when the map has completely loaded */
+    onLoadEnd?: (this: RMap, e: MapEvent) => void;
+    /** Generic error handled */
+    onError?: (this: RMap, e: BaseEvent) => void;
     /** A set of properties that can be accessed later by .get()/.getProperties() */
     properties?: Record<string, unknown>;
     /** Extent of the map, cannot be dynamically modified
@@ -162,15 +190,18 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
 
     componentDidMount(): void {
         super.componentDidMount();
-        this.ol.setTarget(this.target.current);
+        if (this.ol.getTarget() !== this.target.current) {
+            debug('Setting target', this, this.target.current);
+            this.ol.setTarget(this.target.current ?? undefined);
+        }
     }
 
     private updateView = (e: MapEvent): void => {
         const view = this.ol.getView();
-        if (typeof this.props?.view[1] === 'function')
+        if (typeof this.props?.view?.[1] === 'function')
             this.props.view[1]({
-                center: view.getCenter(),
-                zoom: view.getZoom(),
+                center: view.getCenter() ?? [0, 0],
+                zoom: view.getZoom() ?? 0,
                 resolution: view.getResolution()
             });
     };
@@ -180,7 +211,8 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
         const view = this.ol.getView();
         for (const p of ['minZoom', 'maxZoom', 'constrainResolution']) {
             const m = p.charAt(0).toUpperCase() + p.substring(1);
-            if (!prevProps || this.props[p] !== prevProps[p]) {
+            if (this.props?.[p] !== prevProps?.[p]) {
+                debug('Setting', this, m, this.props[p]);
                 view['set' + m](this.props[p]);
             }
         }
@@ -191,6 +223,7 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
             }
         }
         if (this.props.view) {
+            debug('Setting view', this, this.props.view);
             view.setCenter(this.props.view[0].center);
 
             if (this.props.view[0].resolution === undefined) {
