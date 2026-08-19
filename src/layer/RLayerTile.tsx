@@ -46,7 +46,7 @@ export default class RLayerTile extends RLayerRaster<RLayerTileProps> {
     constructor(props: Readonly<RLayerTileProps>) {
         super(props);
         this.createSource();
-        this.ol = new LayerTile({source: this.source});
+        this.ol = new LayerTile({source: this.source, className: props.className});
         this.eventSources = [this.ol, this.source];
     }
 

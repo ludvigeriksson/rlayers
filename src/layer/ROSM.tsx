@@ -22,7 +22,7 @@ export default class ROSM extends LayerRaster<ROSMProps> {
     constructor(props: Readonly<ROSMProps>) {
         super(props);
         this.source = new OSM();
-        this.ol = new LayerTile({source: this.source});
+        this.ol = new LayerTile({source: this.source, className: props.className});
         this.eventSources = [this.ol, this.source];
     }
 

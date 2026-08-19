@@ -13,3 +13,5 @@ export {default as RPinchRotate} from './RPinchRotate';
 export {default as RPinchZoom} from './RPinchZoom';
 export {default as RKeyboardPan} from './RKeyboardPan';
 export {default as RKeyboardZoom} from './RKeyboardZoom';
+export {default as RSelect} from './RSelect';
+export {default as RDblClickDragZoom} from './RDblClickDragZoom';

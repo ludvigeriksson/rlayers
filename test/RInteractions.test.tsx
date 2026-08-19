@@ -1,6 +1,7 @@
 import React from 'react';
-import {fireEvent, render} from '@testing-library/react';
+import {render} from '@testing-library/react';
 
+import {Kinetic} from 'ol';
 import {Style, Stroke} from 'ol/style';
 import {RMap, RInteraction, RLayerVector} from 'rlayers';
 import {RBaseInteraction} from 'rlayers/interaction';
@@ -291,7 +292,7 @@ describe('Default interactions', () => {
             <RMap {...common.mapProps} noDefaultInteractions={true}>
                 <RInteraction.RDragRotate duration={100} />
                 <RInteraction.RDoubleClickZoom duration={100} />
-                <RInteraction.RDragPan kinetic={{decay: 40, delay: 20, minVelocity: 10}} />
+                <RInteraction.RDragPan kinetic={new Kinetic(-0.05, 0.05, 100)} />
                 <RInteraction.RPinchRotate duration={100} />
                 <RInteraction.RPinchZoom duration={100} />
                 <RInteraction.RKeyboardPan duration={100} />

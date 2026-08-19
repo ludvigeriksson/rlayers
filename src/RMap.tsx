@@ -2,8 +2,9 @@ import React, {JSX, PropsWithChildren} from 'react';
 import {Map, View, MapBrowserEvent, MapEvent} from 'ol';
 import RenderEvent from 'ol/render/Event';
 import BaseEvent from 'ol/events/Event';
-import {Extent} from 'ol/extent';
 import {Coordinate} from 'ol/coordinate';
+import {Extent} from 'ol/extent';
+import {Interaction} from 'ol/interaction';
 import {ProjectionLike} from 'ol/proj';
 
 import {RContext} from './context';
@@ -50,6 +51,7 @@ export interface RMapProps extends PropsWithChildren<unknown> {
      * @default false
      */
     noDefaultInteractions?: boolean;
+    interactions?: Interaction[];
     /** View projection
      * @default 'ESPG:3857'
      */
@@ -142,6 +144,14 @@ export interface RMapProps extends PropsWithChildren<unknown> {
      * @default true
      */
     constrainRotation?: boolean | number;
+    /**
+     * Padding (in css pixels). If the map viewport is partially covered with other content (overlays)
+     * along its edges, this setting allows to shift the center of the viewport away from that content.
+     * The order of the values is top, right, bottom, left.
+     *
+     * @default [0, 0, 0, 0]
+     */
+    padding?: [number, number, number, number];
 }
 
 /**
@@ -158,7 +168,7 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
         this.target = React.createRef();
         this.ol = new Map({
             controls: props.noDefaultControls ? [] : undefined,
-            interactions: props.noDefaultInteractions ? [] : undefined,
+            interactions: props.interactions ?? (props.noDefaultInteractions ? [] : undefined),
             view: new View({
                 projection: props.projection,
                 center: props.initial.center,
@@ -171,7 +181,8 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
                 minZoom: props.minZoom,
                 maxZoom: props.maxZoom,
                 enableRotation: props.enableRotation,
-                constrainRotation: props.constrainRotation
+                constrainRotation: props.constrainRotation,
+                padding: props.padding
             })
         });
         if (this.props.view) this.ol.on('moveend', this.updateView);
@@ -181,16 +192,16 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
         super.componentDidMount();
         if (this.ol.getTarget() !== this.target.current) {
             debug('Setting target', this, this.target.current);
-            this.ol.setTarget(this.target.current);
+            this.ol.setTarget(this.target.current ?? undefined);
         }
     }
 
     private updateView = (e: MapEvent): void => {
         const view = this.ol.getView();
-        if (typeof this.props?.view[1] === 'function')
+        if (typeof this.props?.view?.[1] === 'function')
             this.props.view[1]({
-                center: view.getCenter(),
-                zoom: view.getZoom(),
+                center: view.getCenter() ?? [0, 0],
+                zoom: view.getZoom() ?? 0,
                 resolution: view.getResolution()
             });
     };
@@ -205,16 +216,30 @@ export default class RMap extends RlayersBase<RMapProps, Record<string, never>> 
                 view['set' + m](this.props[p]);
             }
         }
+        if (this.props.interactions !== prevProps?.interactions) {
+            this.ol.getInteractions().clear();
+            for (const interaction of this.props.interactions ?? []) {
+                this.ol.addInteraction(interaction);
+            }
+        }
         if (this.props.view) {
             debug('Setting view', this, this.props.view);
             view.setCenter(this.props.view[0].center);
 
-            if (this.props.view[0].resolution === undefined) view.setZoom(this.props.view[0].zoom);
-            else view.setResolution(this.props.view[0].resolution);
+            if (this.props.view[0].resolution === undefined) {
+                view.setZoom(this.props.view[0].zoom);
+            } else {
+                view.setResolution(this.props.view[0].resolution);
+            }
         }
-        if (this.props.properties) this.ol.setProperties(this.props.properties);
-        if (this.props.view) this.ol.on('moveend', this.updateView);
-        else this.ol.un('moveend', this.updateView);
+        if (this.props.properties) {
+            this.ol.setProperties(this.props.properties);
+        }
+        if (this.props.view) {
+            this.ol.on('moveend', this.updateView);
+        } else {
+            this.ol.un('moveend', this.updateView);
+        }
     }
 
     render(): JSX.Element {

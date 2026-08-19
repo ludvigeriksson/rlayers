@@ -73,5 +73,9 @@ export default class RLayerVector<
             this.source.setUrl(this.props.url);
             this.source.refresh();
         }
+        if (prevProps?.features !== this.props.features) {
+            this.source.clear();
+            this.source.addFeatures(this.props.features);
+        }
     }
 }

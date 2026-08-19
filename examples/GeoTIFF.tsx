@@ -37,7 +37,7 @@ class RLayerGeoTIFF extends RLayer<RLayerGeoTIFFProps> {
     constructor(props: Readonly<RLayerGeoTIFFProps>) {
         super(props);
         this.createSource();
-        this.ol = new LayerTile({source: this.source});
+        this.ol = new LayerTile({source: this.source, className: props.className});
         this.eventSources = [this.ol, this.source];
     }
 
