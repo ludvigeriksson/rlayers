@@ -1,4 +1,5 @@
 export {MapEvent, MapBrowserEvent} from 'ol';
+export type {RMapBrowserEvent} from './RMapBrowserEvent';
 export {default as RenderEvent} from 'ol/render/Event';
 export {VectorSourceEvent} from 'ol/source/Vector';
 
